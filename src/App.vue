@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import HabitList from './components/HabitList.vue'
+
 </script>
 
 <template>
@@ -16,6 +18,7 @@ import HelloWorld from './components/HelloWorld.vue'
       </nav>
     </div>
   </header>
+  <HabitList />   <!-- Hier wird die Liste der Habits angezeigt -->
 
   <RouterView />
 </template>
