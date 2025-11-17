@@ -16,6 +16,7 @@ const habits = ref<Habit[]>([]) // reaktive Liste, die Backend-Daten speichert, 
 onMounted(async () => {
   try {
     const response = await axios.get(endpoint)
+    console.log("respone" + response)
     habits.value = response.data
     console.log("Habits vom Backend:", habits.value)
   } catch (err) {
