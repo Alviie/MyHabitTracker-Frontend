@@ -1,10 +1,21 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
 import HabitList from "@/components/HabitList.vue";
 </script>
 
 <template>
   <main>
-    <HabitList /> //Habitlist hinzugefügt statt TheWelcome
+    <h1>Willkommen beim HabitTracker</h1>
+    <HabitList />
   </main>
 </template>
+
+<style scoped>
+main {
+  padding: 0;
+  margin: 0;
+}
+h1 {
+  margin-bottom: 10rem;
+  margin-top: 10rem;
+}
+</style>
