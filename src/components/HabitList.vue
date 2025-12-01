@@ -16,7 +16,7 @@ const habits = ref<Habit[]>([]) // reaktive Liste, die Backend-Daten speichert, 
 // Habits laden (anonyme Funktion onMounted)
 onMounted(async () => {
   try {
-    const response = await axios.get(endpoint)
+    const response = await axios.get(endpoint) // JS-Bibliothek axios ermöglicht Kommunikation zw. Front- und Backend
     console.log("respone" + response)
     habits.value = response.data
     console.log("Habits vom Backend:", habits.value)
