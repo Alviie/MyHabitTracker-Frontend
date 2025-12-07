@@ -63,7 +63,7 @@
           Habit
         </span>
       </span>
-      <span class="text-sm text-gray-600 -mt-1">Tracker</span>
+      <span class="bg-gradient-to-r from-amber-600 to-orange-700 bg-clip-text text-transparent">Tracker</span>
     </div>
   </div>
 </template>
