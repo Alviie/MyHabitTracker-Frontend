@@ -1,11 +1,14 @@
 <template>
   <div class="flex items-center gap-3">
-    <!-- Bear Emoji -->
-    <div class="text-7xl leading-none">
-      🐻
-    </div>
 
-    <!-- Text -->
+    <!-- Bear Logo -->
+    <img
+      src="@/assets/bear.svg"
+      alt="Bear Logo"
+      class="w-30 h-30"
+    />
+
+    <!-- App Titel -->
     <div class="text-left">
       <h1 class="text-4xl font-semibold text-stone-800 leading-tight">
         My Habit
