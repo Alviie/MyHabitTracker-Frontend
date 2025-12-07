@@ -4,9 +4,9 @@ import HabitList from '@/components/HabitList.vue'
 </script>
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center app-font">
-    <HabitTrackerLogo size="xl" class="-translate-y-20 mb-12" />
+    <HabitTrackerLogo size="xl" class="-translate-y-10 mb-12" />
 
-    <div class="app-heading -translate-y-12">
+    <div class="app-heading -translate-y-15">
       Your daily habits shape your future
     </div>
 
