@@ -89,6 +89,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const sizes = {
+  xs: { text: "text-sm", svg: 32, calendar: 12 },
   sm: { text: "text-lg", svg: 40, calendar: 16 },
   md: { text: "text-2xl", svg: 56, calendar: 22 },
   lg: { text: "text-4xl", svg: 80, calendar: 30 },

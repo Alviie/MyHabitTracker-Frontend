@@ -13,6 +13,11 @@ import HabitList from '@/components/HabitList.vue'
     <p class="app-subtext -translate-y-6">
       Ready to take care of yourself today?
     </p>
+
+    <p class="app-subtext mt-8 opacity-70">
+      Tap to get started
+    </p>
+
   </div>
 
 </template>
