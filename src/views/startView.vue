@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import HabitTrackerLogo from '@/components/HabitTrackerLogo.vue'
+import { useRouter } from 'vue-router';
 import HabitList from '@/components/HabitList.vue'
+
+const router = useRouter();
+
+const goToDashboard = () => {
+  router.push('/dashboard'); // [3] Mendefinisikan aksi pindah ke '/dashboard'
+};
 </script>
+
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center app-font">
     <HabitTrackerLogo size="xl" class="-translate-y-10 mb-12" />
@@ -14,7 +22,9 @@ import HabitList from '@/components/HabitList.vue'
       Ready to take care of yourself today?
     </p>
 
-    <p class="app-subtext mt-8 opacity-70">
+    <p
+      class="app-subtext mt-8 opacity-70 cursor-pointer"
+      @click="goToDashboard">
       Tap to get started
     </p>
 
