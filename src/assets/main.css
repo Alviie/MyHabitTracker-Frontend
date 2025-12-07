@@ -1,5 +1,7 @@
-@import './base.css';
+/* GOOGLE FONT */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap');
 
+@import './base.css';
 @import "tailwindcss";
 
 /* Flowbite Vue Styles */
@@ -7,26 +9,52 @@
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite-vue";
 
+/*THEME: FONT DLL*/
+@theme {
+  --font-poppins: "Poppins", system-ui, sans-serif;
+}
+
+/* GLOBAL APP STYLE*/
+
+body {
+  @apply font-sans bg-stone-50 text-stone-800;
+}
+
 #app {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  font-weight: normal;
 }
 
-a,
-.green {
+/* CUSTOM UTILITY CLASSES */
+
+.app-font {
+  @apply font-sans text-stone-800;
+}
+
+.app-heading {
+  @apply font-poppins text-3xl text-stone-800;
+}
+
+.app-subtext {
+  @apply text-sm text-stone-500;
+}
+
+/* LINK STYLE */
+
+a {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+  color: theme('colors.emerald.600');
+  transition: 0.3s;
 }
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+    background-color: theme('colors.emerald.100');
   }
 }
+
+/* DESKTOP OVERRIDE */
 
 @media (min-width: 1024px) {
   body {

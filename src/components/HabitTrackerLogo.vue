@@ -56,14 +56,21 @@
       </div>
     </div>
 
-    <div v-if="showText" class="flex flex-col leading-tight">
-      <span :class="currentSize.text + ' tracking-tight'">
-        <span class="bg-gradient-to-r from-amber-600 to-orange-700 bg-clip-text text-transparent">My</span>
+    <div v-if="showText" class="flex flex-col">
+      <span :class="currentSize.text + ' tracking-tight leading-tight'">
         <span class="bg-gradient-to-r from-amber-600 to-orange-700 bg-clip-text text-transparent">
-          Habit
+           My
+        </span>
+        <span class="bg-gradient-to-r from-amber-600 to-orange-700 bg-clip-text text-transparent">
+           Habit
         </span>
       </span>
-      <span class="bg-gradient-to-r from-amber-600 to-orange-700 bg-clip-text text-transparent">Tracker</span>
+
+      <span
+        class="text-2xl mt-2 font-medium bg-gradient-to-r from-amber-600 to-orange-700 bg-clip-text text-transparent">
+        Tracker
+      </span>
+
     </div>
   </div>
 </template>
@@ -85,6 +92,7 @@ const sizes = {
   sm: { text: "text-lg", svg: 40, calendar: 16 },
   md: { text: "text-2xl", svg: 56, calendar: 22 },
   lg: { text: "text-4xl", svg: 80, calendar: 30 },
+  xl: { text: "text-5xl", svg: 100, calendar: 36 },
 };
 
 const currentSize = computed(() => sizes[props.size]);

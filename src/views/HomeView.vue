@@ -3,15 +3,16 @@ import HabitTrackerLogo from '@/components/HabitTrackerLogo.vue'
 import HabitList from '@/components/HabitList.vue'
 </script>
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center">
-    <HabitTrackerLogo
-      size="lg"
-      class="-translate-y-12 mb-12"
-    />
+  <div class="min-h-screen flex flex-col items-center justify-center app-font">
+    <HabitTrackerLogo size="xl" class="-translate-y-20 mb-12" />
 
-    <div class="text-4xl font-semibold text-orange-600">
-      Welcome to your Habit Tracker
+    <div class="app-heading -translate-y-12">
+      Your daily habits shape your future
     </div>
+
+    <p class="app-subtext -translate-y-6">
+      Ready to take care of yourself today?
+    </p>
   </div>
 
 </template>
