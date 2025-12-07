@@ -1,61 +1,287 @@
 /* GOOGLE FONT */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-@import './base.css';
 @import "tailwindcss";
 
-/* Flowbite Vue Styles */
-@import "flowbite-vue/index.css";
-@plugin "flowbite/plugin";
-@source "../node_modules/flowbite-vue";
-
-/*THEME: FONT DLL*/
+/* THEME: FONTS & COLORS */
 @theme {
+  /* Font Family */
   --font-poppins: "Poppins", system-ui, sans-serif;
+  --font-sans: "Poppins", system-ui, sans-serif;
+
+  /* Habit Tracker Brand Colors - Orange/Amber Palette */
+  --color-primary: #ea580c; /* Orange 600 - Main brand color */
+  --color-primary-hover: #c2410c; /* Orange 700 */
+  --color-primary-light: #f97316; /* Orange 500 */
+  --color-primary-lighter: #fb923c; /* Orange 400 */
+  --color-primary-lightest: #ffedd5; /* Orange 100 */
+  --color-primary-pale: #fff7ed; /* Orange 50 */
+
+  --color-accent: #f59e0b; /* Amber 500 */
+  --color-accent-pale: #fffbeb; /* Amber 50 */
+
+  /* Success/Warning/Error for Calendar */
+  --color-success: #22c55e; /* Green 500 - 100% completion */
+  --color-warning: #facc15; /* Yellow 400 - 50-99% completion */
+  --color-error: #f87171; /* Red 400 - <50% completion */
+  --color-error-hover: #dc2626; /* Red 600 */
+  --color-error-bg: #fef2f2; /* Red 50 */
+
+  /* Neutral Grays */
+  --color-gray-900: #111827; /* Headings, main text */
+  --color-gray-800: #1f2937;
+  --color-gray-700: #374151;
+  --color-gray-600: #4b5563; /* Secondary text */
+  --color-gray-500: #6b7280; /* Tertiary text */
+  --color-gray-400: #9ca3af; /* Disabled/muted */
+  --color-gray-300: #d1d5db; /* Borders */
+  --color-gray-200: #e5e7eb; /* Dividers */
+  --color-gray-100: #f3f4f6; /* Backgrounds */
+  --color-gray-50: #f9fafb; /* Subtle backgrounds */
+
+  /* Background Colors */
+  --color-background: #ffffff;
+  --color-foreground: #111827;
+
+  /* Component Specific */
+  --color-card: #ffffff;
+  --color-card-foreground: #111827;
+  --color-border: #e5e7eb;
+  --color-input: #d1d5db;
+  --color-input-background: #ffffff;
+  --color-ring: #ea580c; /* Focus ring matches primary */
+
+  /* Border Radius */
+  --radius-sm: 0.375rem; /* 6px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.625rem; /* 10px */
+  --radius-xl: 0.75rem; /* 12px */
+
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Font Sizes */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
 }
 
-/* GLOBAL APP STYLE*/
+/* GLOBAL APP STYLE */
+@layer base {
+  * {
+    @apply border-gray-200 outline-primary/50;
+  }
 
-body {
-  @apply font-sans bg-stone-50 text-stone-800;
+  body {
+    @apply font-sans bg-gradient-to-br from-orange-50 via-white to-amber-50 text-gray-900;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    font-size: 16px;
+  }
 }
 
+/* BASE TYPOGRAPHY */
+@layer base {
+  :where(:not(:has([class*=' text-']), :not(:has([class^='text-'])))) {
+    h1 {
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-semibold);
+      line-height: 1.4;
+      color: var(--color-gray-900);
+    }
+
+    h2 {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-semibold);
+      line-height: 1.4;
+      color: var(--color-gray-900);
+    }
+
+    h3 {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      line-height: 1.5;
+      color: var(--color-gray-900);
+    }
+
+    h4 {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      color: var(--color-gray-900);
+    }
+
+    p {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.6;
+      color: var(--color-gray-900);
+    }
+
+    label {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      color: var(--color-gray-700);
+    }
+
+    button {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input, textarea, select {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+      color: var(--color-gray-900);
+    }
+  }
+}
+
+/* APP CONTAINER */
 #app {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
 }
 
-/* CUSTOM UTILITY CLASSES */
+/* CUSTOM UTILITY CLASSES - Habit Tracker Style */
+@layer utilities {
+  /* Text Utilities */
+  .app-font {
+    @apply font-sans text-gray-900;
+  }
 
-.app-font {
-  @apply font-sans text-stone-800;
-}
+  .app-heading {
+    @apply font-poppins text-3xl text-gray-900;
+    font-weight: var(--font-weight-semibold);
+  }
 
-.app-heading {
-  @apply font-poppins text-3xl text-stone-800;
-}
+  .app-subheading {
+    @apply text-xl text-gray-900;
+    font-weight: var(--font-weight-medium);
+  }
 
-.app-subtext {
-  @apply text-sm text-stone-500;
+  .app-text {
+    @apply text-base text-gray-900;
+  }
+
+  .app-subtext {
+    @apply text-sm text-gray-600;
+  }
+
+  .app-muted {
+    @apply text-sm text-gray-500;
+  }
+
+  .app-brand {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* Button Utilities */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-2 rounded-lg transition-colors;
+    background-color: var(--color-primary);
+    color: white;
+    font-weight: var(--font-weight-medium);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-colors;
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-700);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-gray-200);
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-colors;
+    background-color: transparent;
+    color: var(--color-gray-600);
+  }
+
+  .btn-ghost:hover {
+    background-color: var(--color-gray-100);
+  }
+
+  /* Card Utilities */
+  .app-card {
+    @apply bg-white rounded-xl shadow-sm p-6;
+  }
+
+  .app-card-compact {
+    @apply bg-white rounded-lg shadow-sm p-4;
+  }
+
+  /* Input Utilities */
+  .app-input {
+    @apply w-full px-4 py-2 border rounded-lg transition-all;
+    border-color: var(--color-input);
+    background-color: var(--color-input-background);
+  }
+
+  .app-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+  }
+
+  /* Badge Utilities */
+  .badge-streak {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm;
+    background-color: var(--color-primary-lightest);
+    color: var(--color-primary-hover);
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* Progress Bar */
+  .progress-bar {
+    @apply w-full h-3 rounded-full overflow-hidden;
+    background-color: var(--color-gray-100);
+  }
+
+  .progress-fill {
+    @apply h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-500;
+  }
 }
 
 /* LINK STYLE */
-
 a {
   text-decoration: none;
-  color: theme('colors.emerald.600');
-  transition: 0.3s;
+  color: var(--color-primary);
+  transition: all 0.2s ease;
 }
 
 @media (hover: hover) {
   a:hover {
-    background-color: theme('colors.emerald.100');
+    color: var(--color-primary-hover);
+    background-color: var(--color-primary-lightest);
+    padding: 0 0.25rem;
+    border-radius: 0.25rem;
   }
 }
 
-/* DESKTOP OVERRIDE */
-
+/* RESPONSIVE DESIGN */
 @media (min-width: 1024px) {
   body {
     display: flex;
@@ -65,4 +291,22 @@ a {
   #app {
     padding: 0;
   }
+}
+
+/* CUSTOM SCROLLBAR (Optional) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-gray-50);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gray-300);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
 }
