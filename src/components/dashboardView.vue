@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
 
 import HabitTrackerLogo from '@/components/HabitTrackerLogo.vue'
 import AddHabitForm from '@/components/addHabitForm.vue'
@@ -9,8 +9,7 @@ import FilterBar from '@/components/FilterBar.vue'
 import HabitList from '@/components/HabitList.vue'
 import CalendarWidget from '@/components/CalenderWidget.vue'
 
-/* TYPES*/
-type FilterType = 'all' | 'active' | 'completed'
+export type FilterType = 'all' | 'active' | 'completed'
 
 interface Habit {
   id: number
@@ -21,85 +20,45 @@ interface Habit {
   createdDate: string
 }
 
-/*ROUTER*/
+const endpoint = 'http://localhost:3000/habits'
 const router = useRouter()
-const goBack = () => router.push('/') // Ini akan kembali ke StartView
+const goBack = () => router.back()
 
-/*STATE*/
 const habits = ref<Habit[]>([])
 const filter = ref<FilterType>('all')
 
-/*BACKEND CONFIG*/
-const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
-const endpoint = baseURL + '/habits'
-
-/*BACKEND: GET all habits*/
-onMounted(async () => {
-  try {
-    const res = await axios.get(endpoint)
-    habits.value = res.data
-  } catch (err) {
-    console.error("Fehler beim Laden:", err)
-  }
-})
-
-/*ADD HABIT*/
 const addHabit = async (name: string) => {
-  try {
-    const res = await axios.post(endpoint, { name })
-    habits.value.push(res.data)
-  } catch (err) {
-    console.error("Fehler beim Hinzufügen:", err)
-  }
+  const res = await axios.post(endpoint, { name })
+  habits.value.push(res.data)
 }
 
-/* TOGGLE HABIT*/
 const toggleHabit = async (id: number) => {
   const h = habits.value.find(x => x.id === id)
   if (!h) return
-
   h.completed = !h.completed
-
-  try {
-    await axios.patch(`${endpoint}/${id}/toggle`)
-  } catch (err) {
-    console.error("Fehler beim Toggle:", err)
-  }
+  await axios.patch(`${endpoint}/${id}/toggle`)
 }
 
-/*DELETE HABIT*/
 const deleteHabit = async (id: number) => {
   habits.value = habits.value.filter(h => h.id !== id)
-
-  try {
-    await axios.delete(`${endpoint}/${id}`)
-  } catch (err) {
-    console.error("Fehler beim Löschen:", err)
-  }
+  await axios.delete(`${endpoint}/${id}`)
 }
 
-/* FILTERED HABITS */
 const filteredHabits = computed(() => {
   if (filter.value === 'active') return habits.value.filter(h => !h.completed)
   if (filter.value === 'completed') return habits.value.filter(h => h.completed)
   return habits.value
 })
 
-/* Today Progress */
-const completedCount = computed(
-  () => habits.value.filter(h => h.completed).length
-)
-
+const completedCount = computed(() => habits.value.filter(h => h.completed).length)
 const totalCount = computed(() => habits.value.length)
-
-const progressPercent = computed(() => {
-  if (totalCount.value === 0) return 0
-  return (completedCount.value / totalCount.value) * 100
-})
+const progressPercent = computed(() =>
+  totalCount.value === 0 ? 0 : (completedCount.value / totalCount.value) * 100
+)
 </script>
 
 <template>
-  <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50">
+  <div class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50">
 
     <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
       <div class="max-w-4xl mx-auto px-4 py-4">
@@ -154,3 +113,4 @@ const progressPercent = computed(() => {
     </main>
   </div>
 </template>
+

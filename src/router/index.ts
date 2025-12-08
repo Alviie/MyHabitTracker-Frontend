@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import StartView from '../views/startView.vue'
-import dashboardView from '../views/dashboardView.vue' //2. path
+import StartView from '../components/startView.vue'
+import dashboardView from '../components/dashboardView.vue' //2. path
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
