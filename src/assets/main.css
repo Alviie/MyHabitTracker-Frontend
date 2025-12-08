@@ -152,9 +152,26 @@
 }
 
 /* APP CONTAINER */
+/* APP CONTAINER (Default untuk Mobile/Tablet) */
 #app {
-  max-width: 1280px;
+  max-width: 1280px; /* Batasan berlaku di sini */
   margin: 0 auto;
+}
+
+/* RESPONSIVE DESIGN - Hapus Batasan di Layar Besar */
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: normal;
+  }
+
+  /* KUNCI PERBAIKAN: Timpa max-width dengan lebar penuh di laptop */
+  #app {
+    padding: 0;
+    max-width: none; /* Hapus batasan lebar! */
+    width: 100%;    /* Pastikan mengambil lebar penuh! */
+    margin: 0;      /* Hapus sentrisasi otomatis */
+  }
 }
 
 /* CUSTOM UTILITY CLASSES - Habit Tracker Style */

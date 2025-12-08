@@ -6,7 +6,7 @@ import HabitList from '@/components/HabitList.vue'
 const router = useRouter();
 
 const goToDashboard = () => {
-  router.push('/dashboard'); // [3] Mendefinisikan aksi pindah ke '/dashboard'
+  router.push('/dashboard');
 };
 </script>
 

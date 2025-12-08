@@ -1,22 +1,46 @@
+<script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+  size: {
+    type: String,
+    default: 'xl',
+    validator: (value) => ['xl', 'lg', 'md', 'sm'].includes(value),
+  }
+});
+
+const logoClasses = computed(() => {
+  switch (props.size) {
+    case 'sm':
+      return { logo: 'w-10 h-10', title: 'text-xl', tracker: 'text-sm' };
+    case 'md':
+      return { logo: 'w-12 h-12', title: 'text-2xl', tracker: 'text-base' };
+    case 'lg':
+      return { logo: 'w-16 h-16', title: 'text-3xl', tracker: 'text-lg' };
+    case 'xl':
+    default:
+      return { logo: 'w-24 h-24', title: 'text-4xl', tracker: 'text-xl' };
+  }
+});
+</script>
+
 <template>
   <div class="flex items-center gap-3">
 
-    <!-- Bear Logo -->
     <img
       src="@/assets/bear.svg"
       alt="Bear Logo"
-      class="w-30 h-30"
+      :class="[logoClasses.logo]"
     />
 
-    <!-- App Titel -->
     <div class="text-left">
-      <h1 class="text-4xl font-semibold text-stone-800 leading-tight">
+      <h1 :class="[logoClasses.title, 'font-semibold text-stone-800 leading-tight']">
         My Habit
       </h1>
 
-      <div class="flex items-center gap-3 text-orange-600 text-lg font-medium">
+      <div :class="[logoClasses.tracker, 'flex items-center gap-3 text-orange-600 font-medium']">
         <svg
-          class="w-7 h-7"
+          :class="[logoClasses.tracker, 'w-6 h-6']"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
