@@ -16,10 +16,10 @@ const logoClasses = computed(() => {
     case 'md':
       return { logo: 'w-12 h-12', title: 'text-2xl', tracker: 'text-base' };
     case 'lg':
-      return { logo: 'w-16 h-16', title: 'text-3xl', tracker: 'text-lg' };
+      return { logo: 'w-22 h-22', title: 'text-3xl', tracker: 'text-lg' };
     case 'xl':
     default:
-      return { logo: 'w-24 h-24', title: 'text-4xl', tracker: 'text-xl' };
+      return { logo: 'w-25 h-25', title: 'text-4xl', tracker: 'text-xl' };
   }
 });
 </script>

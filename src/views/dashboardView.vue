@@ -99,76 +99,58 @@ const progressPercent = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 app-font">
+  <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50">
 
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-20">
-      <div class=" lg:px-4 flex items-center gap-6">
-
-        <button
-          @click="goBack"
-          class="p-2 hover:bg-gray-100 rounded-lg transition-colors ml-50"
-        >
-          <span class="text-gray-600 text-3xl"> ← </span>
-        </button>
-
-        <HabitTrackerLogo size="md" />
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div class="max-w-4xl mx-auto px-4 py-4">
+        <div class="flex items-center gap-4 mb-4">
+          <button
+            @click="goBack"
+            class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <span class="w-5 h-5 text-gray-600 text-3xl"> ← </span>
+          </button>
+          <HabitTrackerLogo size="lg" />
+        </div>
+        <AddHabitForm @add="addHabit" />
       </div>
     </header>
 
-    <main
-      class="max-w-3xl mx-auto px-4 py-8 space-y-8
-         lg:max-w-full lg:grid lg:grid-cols-3 lg:gap-8 lg:space-y-0 lg:px-8 lg:w-full"
-    >
+    <main class="max-w-4xl mx-auto px-4 py-8">
 
-      <div class="lg:col-span-2 space-y-8">
+      <div v-if="totalCount > 0" class="bg-white rounded-xl shadow-sm p-6 mb-6">
 
-        <AddHabitForm @add="addHabit" />
-
-        <div
-          v-if="totalCount > 0"
-          class="bg-white rounded-xl shadow-sm p-6 border border-gray-200"
-        >
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-gray-600 mb-1">Today's Progress</p>
-              <p class="text-gray-900">
-                {{ completedCount }} von {{ totalCount }} erledigt
-              </p>
-            </div>
-            <div class="text-3xl">
-              {{ completedCount === totalCount && totalCount > 0 ? '🎉' : '💪' }}
-            </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-600 mb-1">Today's Progress</p>
+            <p class="text-gray-900">
+              {{ completedCount }} of {{ totalCount }} habits completed
+            </p>
           </div>
-
-          <div class="mt-4 bg-gray-100 rounded-full h-3 overflow-hidden">
-            <div
-              class="bg-gradient-to-r from-orange-500 to-amber-500 h-full transition-all duration-500"
-              :style="{ width: progressPercent + '%' }"
-            />
+          <div class="text-3xl">
+            {{ completedCount === totalCount && totalCount > 0 ? '🎉' : '💪' }}
           </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <FilterBar
-            :currentFilter="filter"
-            @change="filter = $event"
-          />
-
-          <HabitList
-            :habits="filteredHabits"
-            @toggle="toggleHabit"
-            @delete="deleteHabit"
+        <div class="mt-4 bg-gray-100 rounded-full h-3 overflow-hidden">
+          <div
+            class="bg-gradient-to-r from-orange-500 to-amber-500 h-full transition-all duration-500"
+            :style="{ width: `${totalCount > 0 ? (completedCount / totalCount) * 100 : 0}%` }"
           />
         </div>
       </div>
 
-      <div class="lg:col-span-1">
-        <CalendarWidget
-          v-if="habits.length > 0"
-          :habits="habits"
-        />
-      </div>
+      <CalendarWidget v-if="habits.length > 0" :habits="habits" />
 
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <FilterBar
+          :currentFilter="filter"
+          @change="filter = $event" />
+
+        <HabitList
+          :habits="filteredHabits"
+          @toggle="toggleHabit"
+          @delete="deleteHabit" />
+      </div>
     </main>
   </div>
 </template>

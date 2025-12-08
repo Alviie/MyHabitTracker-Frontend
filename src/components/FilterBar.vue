@@ -8,15 +8,15 @@ const emit = defineEmits<{
 }>()
 
 const filters = [
-  { value: 'all', label: 'Alle' },
-  { value: 'active', label: 'Aktive' },
-  { value: 'completed', label: 'Erledigte' }
+  { value: 'all', label: 'All' },
+  { value: 'active', label: 'Active' },
+  { value: 'completed', label: 'Completed' }
 ]
 </script>
 
 <template>
-  <div class="border-b border-gray-200 pb-4 mb-4">
-    <div class="flex gap-3">
+  <div class="border-b border-gray-200 px-6 py-4">
+    <div class="flex gap-2">
 
       <button
         v-for="f in filters"
