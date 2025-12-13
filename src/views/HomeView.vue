@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import HabitList from "@/components/HabitList.vue";
+import Accordion from "@/components/Accordion.vue";
 </script>
 
 <template>
