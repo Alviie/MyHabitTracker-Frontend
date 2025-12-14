@@ -5,12 +5,21 @@ import { FwbButton } from 'flowbite-vue'
 
 // Typ für Habit
 interface Habit {
-  id: number        // Java Long -> number
+  id: number
   name: string
   completed: boolean
   streakCount: number
-  lastCompletedDate: string | null  // LocalDate -> ISO-String oder null
+  lastCompletedDate: string | null
+
+  category: string
+  targetAmount: number
+  targetUnit: string
+  frequency: 'daily' | 'weekly' | 'custom'
+  notes: string
+  color: string
+  icon: string
 }
+
 
 // Typ für Habit-Stats
 interface HabitStats {
@@ -38,12 +47,22 @@ onMounted(async () => {
     document.documentElement.classList.remove('dark')
   }
 
-
   try {
     const response = await axios.get(endpoint) // JS-Bibliothek axios ermöglicht Kommunikation zw. Front- und Backend
     console.log("response" + response)
     habits.value = response.data // Backend wird geladen
     console.log("Habits vom Backend:", habits.value)
+
+    habits.value = response.data.map((h: any) => ({
+      category: '',
+      targetAmount: 0,
+      targetUnit: '',
+      frequency: 'daily',
+      notes: '',
+      color: '#22c55e',
+      icon: '',
+      ...h,
+    }))
 
   } catch (err) {
     console.error("Fehler beim Laden der Habits:", err)
@@ -65,6 +84,51 @@ const addHabit = async () => {
     console.error('Fehler beim Anlegen des Habits:', err)
   }
 }
+
+// Habit bearbeiten
+const editingHabitId = ref<number | null>(null)
+const editHabit = ref<Partial<Habit> | null>(null)
+const showEditModal = ref(false)
+const availableIcons = [
+  '🏃‍♂️', '🚴‍♂️', '🏋️', '🧘', '🧗‍♂️', '🥗', '🍎', '💧', '🛌', '📚',
+  '✏️', '💻', '📱', '📝', '📅', '🧹', '🛒', '💰', '📞', '💌',
+  '🎸', '🎨', '🌱', '🌳', '🐕', '😴', '🧴', '👔', '🚿', '🧺'
+]
+
+
+const startEdit = (habit: Habit) => {
+  editingHabitId.value = habit.id
+  editHabit.value = { ...habit }
+  showEditModal.value = true
+}
+
+const cancelEdit = () => {
+  editingHabitId.value = null
+  editHabit.value = null
+  showEditModal.value = false
+}
+
+const saveEdit = async () => {
+  if (!editingHabitId.value || !editHabit.value) return
+
+  const habit = habits.value.find(h => h.id === editingHabitId.value)
+  if (!habit) return
+
+  const updated = { ...habit, ...editHabit.value }
+
+  try {
+    const response = await axios.put(`${endpoint}/${habit.id}`, updated)
+    habits.value = habits.value.map(h =>
+      h.id === habit.id ? response.data : h
+    )
+    editingHabitId.value = null
+    editHabit.value = null
+    showEditModal.value = false
+  } catch (err) {
+    console.error('Fehler beim Aktualisieren des Habits:', err)
+  }
+}
+
 
 // Habit löschen
 const deleteHabit = async (id: number) => {
@@ -225,6 +289,8 @@ const toggleDarkMode = () => {
 
 
 
+
+
 </script>
 
 <template>
@@ -331,16 +397,34 @@ const toggleDarkMode = () => {
     </div>
 
     <ul>
-      <li v-for="habit in habitsForDay" :key="habit.id"
-          class="p-4 bg-white border dark:bg-slate-800 dark:border-slate-700 rounded-lg mb-2 flex justify-between items-center">
-        <!-- Bestehende Habit-Row -->
+      <li
+        v-for="habit in habitsForDay"
+        :key="habit.id"
+        class="p-4 bg-white border dark:bg-slate-800 dark:border-slate-700 rounded-lg mb-2 flex justify-between items-center"
+      >
         <div class="flex-1">
-          <h3 class="text-xl font-bold text-shadow-slate-900 dark:text-white">{{ habit.name }}</h3>
+          <h3 class="text-xl font-bold text-shadow-slate-900 dark:text-white">
+            <span v-if="habit.icon" class="mr-2">{{ habit.icon }}</span>
+            {{ habit.name }}
+          </h3>
           <p class="text-emerald-400">
             Streak: {{ habit.streakCount }} 🔥 {{ habit.completed ? '✓' : '' }}
           </p>
+          <p class="text-sm text-slate-500 dark:text-slate-300">
+            {{ habit.category }} · Ziel: {{ habit.targetAmount }} {{ habit.targetUnit }} · {{ habit.frequency }}
+          </p>
+          <p v-if="habit.notes" class="text-sm text-slate-500 dark:text-slate-300">
+            {{ habit.notes }}
+          </p>
         </div>
+
         <div class="flex gap-2">
+          <button
+            class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300 text-slate-800 text-sm font-medium"
+            @click="startEdit(habit)"
+          >
+            Bearbeiten
+          </button>
           <button
             class="px-4 py-2 rounded font-medium text-white"
             :class="habit.completed ? 'bg-gray-500 hover:bg-gray-600' : 'bg-green-500 hover:bg-green-600'"
@@ -357,6 +441,105 @@ const toggleDarkMode = () => {
         </div>
       </li>
     </ul>
+    <!-- Edit-Modal -->
+    <div
+      v-if="showEditModal && editHabit"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+    >
+      <div class="w-full max-w-lg rounded-lg bg-white p-6 shadow-lg dark:bg-slate-800">
+        <h3 class="mb-4 text-xl font-bold text-slate-900 dark:text-white">
+          Habit bearbeiten
+        </h3>
+
+        <div class="space-y-3">
+          <input
+            v-model="editHabit.name"
+            type="text"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
+            placeholder="Name"
+          />
+          <input
+            v-model="editHabit.category"
+            type="text"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
+            placeholder="Kategorie"
+          />
+          <div class="flex gap-2">
+            <input
+              v-model.number="editHabit.targetAmount"
+              type="number"
+              min="0"
+              class="w-24 rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
+              placeholder="Ziel"
+            />
+            <input
+              v-model="editHabit.targetUnit"
+              type="text"
+              class="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
+              placeholder="Einheit"
+            />
+          </div>
+          <select
+            v-model="editHabit.frequency"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
+          >
+            <option value="daily">Täglich</option>
+            <option value="weekly">Mehrmals pro Woche</option>
+            <option value="custom">Custom</option>
+          </select>
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-slate-600 dark:text-slate-300">Farbe:</span>
+            <input
+              v-model="editHabit.color"
+              type="color"
+              class="w-10 h-10 p-0 border border-slate-300 rounded"
+            />
+          </div>
+          <div class="space-y-1">
+            <span class="text-sm text-slate-600 dark:text-slate-300">Icon:</span>
+            <div class="flex flex-wrap gap-2">
+              <button
+                v-for="icon in availableIcons"
+                :key="icon"
+                type="button"
+                class="flex h-9 w-9 items-center justify-center rounded-full border text-xl
+             transition
+             hover:bg-slate-100 dark:hover:bg-slate-700"
+                :class="editHabit.icon === icon
+                  ? 'bg-emerald-500 text-white border-emerald-500'
+                  : 'border-slate-300 dark:border-slate-600'"
+                @click="editHabit.icon = icon"
+              >
+                {{ icon }}
+              </button>
+            </div>
+          </div>
+          <textarea
+            v-model="editHabit.notes"
+            rows="3"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
+            placeholder="Notizen / Beschreibung"
+          />
+        </div>
+
+        <div class="mt-6 flex justify-end gap-2">
+          <button
+            class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-slate-800 text-sm font-medium"
+            @click="cancelEdit"
+          >
+            Abbrechen
+          </button>
+          <button
+            class="px-4 py-2 rounded bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium"
+            @click="saveEdit"
+          >
+            Speichern
+          </button>
+        </div>
+      </div>
+    </div>
+
+
   </div>
 </template>
 
