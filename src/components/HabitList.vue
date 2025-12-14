@@ -94,6 +94,28 @@ const availableIcons = [
   '✏️', '💻', '📱', '📝', '📅', '🧹', '🛒', '💰', '📞', '💌',
   '🎸', '🎨', '🌱', '🌳', '🐕', '😴', '🧴', '👔', '🚿', '🧺'
 ]
+const availableColors = [
+  { value: '#10b981', label: 'Grün', class: 'bg-emerald-500' },
+  { value: '#3b82f6', label: 'Blau', class: 'bg-blue-500' },
+  { value: '#f59e0b', label: 'Orange', class: 'bg-orange-500' },
+  { value: '#ec4899', label: 'Rosa', class: 'bg-pink-500' },
+  { value: '#8b5cf6', label: 'Violett', class: 'bg-purple-500' },
+  { value: '#ef4444', label: 'Rot', class: 'bg-red-500' },
+  { value: '#6b7280', label: 'Grau', class: 'bg-gray-500' }
+]
+
+const availableCategories = [
+  'Sport',
+  'Ernährung',
+  'Familie',
+  'Arbeit',
+  'Lernen',
+  'Haushalt',
+  'Finanzen',
+  'Soziales',
+  'Hobby',
+  'Entspannung'
+]
 
 
 const startEdit = (habit: Habit) => {
@@ -403,19 +425,18 @@ const toggleDarkMode = () => {
         class="p-4 bg-white border dark:bg-slate-800 dark:border-slate-700 rounded-lg mb-2 flex justify-between items-center"
       >
         <div class="flex-1">
-          <h3 class="text-xl font-bold text-shadow-slate-900 dark:text-white">
-            <span v-if="habit.icon" class="mr-2">{{ habit.icon }}</span>
-            {{ habit.name }}
+          <h3 class="text-xl font-bold flex items-center gap-2">
+            <span v-if="habit.icon" class="text-lg">{{ habit.icon }}</span>
+            <span :style="{ color: habit.color }">{{ habit.name }}</span>
           </h3>
           <p class="text-emerald-400">
             Streak: {{ habit.streakCount }} 🔥 {{ habit.completed ? '✓' : '' }}
           </p>
-          <p class="text-sm text-slate-500 dark:text-slate-300">
-            {{ habit.category }} · Ziel: {{ habit.targetAmount }} {{ habit.targetUnit }} · {{ habit.frequency }}
-          </p>
-          <p v-if="habit.notes" class="text-sm text-slate-500 dark:text-slate-300">
-            {{ habit.notes }}
-          </p>
+          <div v-if="habit.category" class="mt-1">
+            <span class="px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
+            {{ habit.category }}
+            </span>
+          </div>
         </div>
 
         <div class="flex gap-2">
@@ -458,12 +479,19 @@ const toggleDarkMode = () => {
             class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
             placeholder="Name"
           />
-          <input
-            v-model="editHabit.category"
-            type="text"
-            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
-            placeholder="Kategorie"
-          />
+          <div class="space-y-1">
+            <label class="text-sm text-slate-600 dark:text-slate-300">Kategorie:</label>
+            <select
+              v-model="editHabit.category"
+              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
+            >
+              <option value="">Keine Kategorie</option>
+              <option v-for="cat in availableCategories" :key="cat" :value="cat">
+                {{ cat }}
+              </option>
+            </select>
+          </div>
+
           <div class="flex gap-2">
             <input
               v-model.number="editHabit.targetAmount"
@@ -489,11 +517,27 @@ const toggleDarkMode = () => {
           </select>
           <div class="flex items-center gap-2">
             <span class="text-sm text-slate-600 dark:text-slate-300">Farbe:</span>
-            <input
-              v-model="editHabit.color"
-              type="color"
-              class="w-10 h-10 p-0 border border-slate-300 rounded"
-            />
+            <div class="space-y-1">
+              <span class="text-sm text-slate-600 dark:text-slate-300">Farbe:</span>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  v-for="color in availableColors"
+                  :key="color.value"
+                  type="button"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg border-2 text-white shadow-sm transition
+                    hover:scale-105 hover:shadow-md"
+                  :class="[
+                    editHabit.color === color.value
+                      ? 'border-emerald-500 ring-2 ring-emerald-500 ring-offset-2'
+                      : 'border-slate-300 dark:border-slate-600 hover:border-slate-400',
+                    color.class
+                   ]"
+                  @click="editHabit.color = color.value"
+                >
+                  <span class="sr-only">{{ color.label }}</span>
+                </button>
+              </div>
+            </div>
           </div>
           <div class="space-y-1">
             <span class="text-sm text-slate-600 dark:text-slate-300">Icon:</span>
