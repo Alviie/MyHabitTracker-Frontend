@@ -1,22 +1,16 @@
 <script setup lang="ts">
 import HabitList from "@/components/HabitList.vue";
-import Accordion from "@/components/Accordion.vue";
 </script>
 
 <template>
   <main>
-    <h1>Willkommen beim HabitTracker</h1>
+    <h1 class="text-left text-4xl font-extrabold">Home View</h1>
     <HabitList />
   </main>
 </template>
 
 <style scoped>
-main {
-  padding: 0;
-  margin: 0;
-}
 h1 {
-  margin-bottom: 10rem;
-  margin-top: 10rem;
+  margin-bottom: 5rem;
 }
 </style>

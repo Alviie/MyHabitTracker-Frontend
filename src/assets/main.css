@@ -11,10 +11,45 @@
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite-vue";
 
+html, body, #app {
+  @apply bg-slate-50 dark:bg-slate-900 min-h-screen;
+}
+
+@layer base {
+  :root {
+    --text-primary: #111827;     /* Schwarz Light */
+    --text-secondary: #6b7280;   /* Grau Light */
+  }
+
+  .dark {
+    --text-primary: #f9fafb;     /* Weiss Dark */
+    --text-secondary: #d1d5db;   /* Hellgrau Dark */
+  }
+
+  /* ALLE Texte automatisch! */
+  * {
+    color: var(--text-primary);
+  }
+}
+
+
+
+@layer base {
+  html.light {
+    color-scheme: light !important;
+    --color-text: black !important;
+  }
+
+  html.dark {
+    color-scheme: dark !important;
+    --color-text: white !important;
+  }
+}
+
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 1600px;
+  margin: 20px auto;
+  padding: 10rem;
   font-weight: normal;
 }
 
@@ -41,4 +76,7 @@ a,
   #app {
     padding: 0;
   }
+
 }
+
+@custom-variant dark (&:where(.dark, .dark *));
