@@ -3,14 +3,17 @@ import {ref, onMounted, computed} from 'vue'
 import axios from 'axios'
 import { FwbButton } from 'flowbite-vue'
 
-// Typ für Habit
+// ======================================
+// DATENMODELL
+// ======================================
+
+// Typ für Habit (alle Felder inkl. neue Attribute)
 interface Habit {
   id: number
   name: string
   completed: boolean
   streakCount: number
   lastCompletedDate: string | null
-
   category: string
   targetAmount: number
   targetUnit: string
@@ -19,7 +22,6 @@ interface Habit {
   color: string
   icon: string
 }
-
 
 // Typ für Habit-Stats
 interface HabitStats {
@@ -30,12 +32,15 @@ interface HabitStats {
   avgStreak: number
 }
 
-// Backend URL aus Environment-Variable
+// ======================================
+// BACKEND-KOMMUNIKATION
+// ======================================
+
 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 const endpoint = baseURL + '/habits'
 
 
-// Habits laden (anonyme Funktion onMounted)
+// Habits vom Backend laden
 const habits = ref<Habit[]>([]) // reaktive Liste, die Backend-Daten speichert, Variable ref aktualisiert Template
 
 onMounted(async () => {
@@ -69,7 +74,7 @@ onMounted(async () => {
   }
 })
 
-// Methode: Neues Habit hinzufügen und Liste aktualisieren
+// Neues Habit hinzufügen und Liste aktualisieren
 const newHabitName = ref('')
 
 const addHabit = async () => {
@@ -85,10 +90,14 @@ const addHabit = async () => {
   }
 }
 
-// Habit bearbeiten
+// ======================================
+// HABIT BEARBEITEN (MODAL)
+// ======================================
 const editingHabitId = ref<number | null>(null)
 const editHabit = ref<Partial<Habit> | null>(null)
 const showEditModal = ref(false)
+
+// Vorgegebene Icons, Farben, Kategorien
 const availableIcons = [
   '🏃‍♂️', '🚴‍♂️', '🏋️', '🧘', '🧗‍♂️', '🥗', '🍎', '💧', '🛌', '📚',
   '✏️', '💻', '📱', '📝', '📅', '🧹', '🛒', '💰', '📞', '💌',
@@ -116,7 +125,6 @@ const availableCategories = [
   'Hobby',
   'Entspannung'
 ]
-
 
 const startEdit = (habit: Habit) => {
   editingHabitId.value = habit.id
@@ -152,7 +160,9 @@ const saveEdit = async () => {
 }
 
 
-// Habit löschen
+// ======================================
+// HABIT LÖSCHEN & STATUS WECHSELN
+// ======================================
 const deleteHabit = async (id: number) => {
   try {
     await axios.delete(`${endpoint}/${id}`)
@@ -162,23 +172,9 @@ const deleteHabit = async (id: number) => {
   }
 }
 
-// Habit als erledigt markieren / toggeln
-const toggleCompleted = async (habit: Habit) => {
-  try {
-    // Annahme: Backend-Endpoint erwartet PUT mit aktualisiertem Habit
-    const updated = { ...habit, completed: !habit.completed }
-    const response = await axios.put(`${endpoint}/${habit.id}`, updated)
-
-    // Habit in der Liste ersetzen
-    habits.value = habits.value.map(h =>
-      h.id === habit.id ? response.data : h
-    )
-  } catch (err) {
-    console.error('Fehler beim Aktualisieren des Habits:', err)
-  }
-}
-
-// Methode: Filter (nach habits/newHabitName)
+// ======================================
+// FILTER & STATISTIKEN
+// ======================================
 const filterMode = ref<'all' | 'open' | 'completed'>('all')
 
 const filteredHabits = computed(() => {
@@ -192,7 +188,6 @@ const filteredHabits = computed(() => {
   }
 })
 
-// Habits Stats
 const stats = computed<HabitStats>(() => {
   const total = habits.value.length
   const completedToday = habits.value.filter(h => h.completed).length
@@ -210,13 +205,15 @@ const stats = computed<HabitStats>(() => {
   }
 })
 
-// Wochentags-Navigation
+// ======================================
+// WOCHEN- & TAG-NAVIGATION
+// ======================================
+
 const habitCompletions = ref<Record<string, boolean>[]>([])  // Array pro Tag
 
 const selectedDay = ref(0)
 const weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
 
-// Computed: Habits + Completion für aktuellen Tag
 const habitsForDay = computed(() => {
   const dayIndex = selectedDay.value
   const dayCompletions = habitCompletions.value[dayIndex] || {}
@@ -266,10 +263,8 @@ const toggleHabit = async (habitId: number) => {
   }
 }
 
-// ← NEU: Woche + Offset
 const weekOffset = ref<number>(0)
 
-// ← Computed HINZUFÜGEN:
 const currentDate = computed(() => {
   const today = new Date()
   const todayDay = today.getDay()  // JS: So=0
@@ -288,8 +283,10 @@ const getWeekdayHeader = (dayIndex: number) => {
   return date.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric' })
 }
 
+// ======================================
+// DARK MODE
+// ======================================
 
-// Dark-Mode
 const darkMode = ref(false)
 
 const toggleDarkMode = () => {
@@ -307,18 +304,15 @@ const toggleDarkMode = () => {
   }
 }
 
-
-
-
-
-
-
 </script>
 
 <template>
   <div>
-    <h2 class="text-3xl">Meine Habits</h2>
+    <h2 class="text-3xl font-bold text-blue-600">Meine Habits</h2>
 
+    <!-- ====================================== -->
+    <!-- DARK MODE BUTTON -->
+    <!-- ====================================== -->
     <div class="flex justify-end mb-4">
       <button @click="toggleDarkMode" class="p-2 rounded-full bg-slate-200 text-slate-800 hover:bg-slate-300 transition-all dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
         <svg v-if="!darkMode" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -330,7 +324,9 @@ const toggleDarkMode = () => {
       </button>
     </div>
 
-    <!-- ← NEUER FILTER BUTTON -->
+    <!-- ====================================== -->
+    <!-- FILTER BUTTONS (Alle/Offen/Erledigt) -->
+    <!-- ====================================== -->
     <div class="mb-6 flex gap-2">
       <button
         class="px-4 py-2 rounded font-medium text-white transition-all
@@ -358,7 +354,9 @@ const toggleDarkMode = () => {
       </button>
     </div>
 
-    <!-- Habit-Stats -->
+    <!-- ====================================== -->
+    <!-- HABITS STATS (4 Spalten) -->
+    <!-- ====================================== -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-6 bg-slate-100 dark:bg-slate-800 rounded-lg">
       <div class="text-center">
         <div class="text-2xl font-bold text-emerald-400">{{ stats.completed }}</div>
@@ -378,7 +376,9 @@ const toggleDarkMode = () => {
       </div>
     </div>
 
-    <!-- ← WOCHEN-NAVIGATION (nach Stats, vor Wochentags-Balken) -->
+    <!-- ====================================== -->
+    <!-- WOCHEN-NAVIGATION (← Woche →) -->
+    <!-- ====================================== -->
     <div class="flex items-center justify-center gap-4 mb-6">
       <button @click="weekOffset--" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm">
         ← Woche
@@ -392,7 +392,9 @@ const toggleDarkMode = () => {
     </div>
 
 
-    <!-- ← WOCHENTAGS-BALKEN (angepasst) -->
+    <!-- ====================================== -->
+    <!-- WOCHENTAGE BUTTONS (So Mo Di Mi Do Fr Sa) -->
+    <!-- ====================================== -->
     <div class="flex gap-1 mb-6 overflow-x-auto pb-2">
       <button v-for="day in 7" :key="day"
               class="flex-1 min-w-[60px] px-3 py-2 rounded-full text-sm font-medium transition-all"
@@ -402,13 +404,17 @@ const toggleDarkMode = () => {
       </button>
     </div>
 
-    <!-- ← DATUM (zentriert) -->
+    <!-- ====================================== -->
+    <!-- AKTUELLES DATUM -->
+    <!-- ====================================== -->
     <div class="mb-6 text-center">
       <h3 class="font-bold text-2xl text-black dark:text-white">{{ currentDate.toLocaleDateString('de-DE') }}</h3>
     </div>
 
 
-    <!-- Habit-Eingabe -->
+    <!-- ====================================== -->
+    <!-- NEUES HABIT HINZUFÜGEN -->
+    <!-- ====================================== -->
     <div class="mb-6 flex gap-3">
       <input v-model="newHabitName" type="text" placeholder="Neues Habit..."
              class="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-800" />
@@ -418,6 +424,9 @@ const toggleDarkMode = () => {
       </button>
     </div>
 
+    <!-- ====================================== -->
+    <!-- HABITS LISTE (mit Icon, Kategorie-Tag, Buttons) -->
+    <!-- ====================================== -->
     <ul>
       <li
         v-for="habit in habitsForDay"
@@ -429,9 +438,12 @@ const toggleDarkMode = () => {
             <span v-if="habit.icon" class="text-lg">{{ habit.icon }}</span>
             <span :style="{ color: habit.color }">{{ habit.name }}</span>
           </h3>
+
+          <!-- Streak Anzeige -->
           <p class="text-emerald-400">
             Streak: {{ habit.streakCount }} 🔥 {{ habit.completed ? '✓' : '' }}
           </p>
+          <!-- Kategorie Tag -->
           <div v-if="habit.category" class="mt-1">
             <span class="px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
             {{ habit.category }}
@@ -439,6 +451,7 @@ const toggleDarkMode = () => {
           </div>
         </div>
 
+        <!-- Buttons: Bearbeiten / Erledigt / Löschen -->
         <div class="flex gap-2">
           <button
             class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300 text-slate-800 text-sm font-medium"
@@ -462,7 +475,10 @@ const toggleDarkMode = () => {
         </div>
       </li>
     </ul>
-    <!-- Edit-Modal -->
+
+    <!-- ====================================== -->
+    <!-- HABITS BEARBEITEN MODAL (Overlay mit Formular) -->
+    <!-- ====================================== -->
     <div
       v-if="showEditModal && editHabit"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
@@ -472,6 +488,7 @@ const toggleDarkMode = () => {
           Habit bearbeiten
         </h3>
 
+        <!-- Edit Formular (alle Felder) -->
         <div class="space-y-3">
           <input
             v-model="editHabit.name"
@@ -479,6 +496,8 @@ const toggleDarkMode = () => {
             class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
             placeholder="Name"
           />
+
+          <!-- Kategorie Dropdown -->
           <div class="space-y-1">
             <label class="text-sm text-slate-600 dark:text-slate-300">Kategorie:</label>
             <select
@@ -492,6 +511,7 @@ const toggleDarkMode = () => {
             </select>
           </div>
 
+          <!-- Ziel (Anzahl + Einheit) -->
           <div class="flex gap-2">
             <input
               v-model.number="editHabit.targetAmount"
@@ -507,6 +527,8 @@ const toggleDarkMode = () => {
               placeholder="Einheit"
             />
           </div>
+
+          <!-- Frequenz Dropdown -->
           <select
             v-model="editHabit.frequency"
             class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
@@ -515,6 +537,8 @@ const toggleDarkMode = () => {
             <option value="weekly">Mehrmals pro Woche</option>
             <option value="custom">Custom</option>
           </select>
+
+          <!-- Farbe Auswahl -->
           <div class="flex items-center gap-2">
             <span class="text-sm text-slate-600 dark:text-slate-300">Farbe:</span>
             <div class="space-y-1">
@@ -539,6 +563,8 @@ const toggleDarkMode = () => {
               </div>
             </div>
           </div>
+
+          <!-- Icon Auswahl -->
           <div class="space-y-1">
             <span class="text-sm text-slate-600 dark:text-slate-300">Icon:</span>
             <div class="flex flex-wrap gap-2">
@@ -558,6 +584,8 @@ const toggleDarkMode = () => {
               </button>
             </div>
           </div>
+
+          <!-- Notizen Textarea -->
           <textarea
             v-model="editHabit.notes"
             rows="3"
@@ -566,6 +594,7 @@ const toggleDarkMode = () => {
           />
         </div>
 
+        <!-- Modal Buttons -->
         <div class="mt-6 flex justify-end gap-2">
           <button
             class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-slate-800 text-sm font-medium"
@@ -587,6 +616,4 @@ const toggleDarkMode = () => {
   </div>
 </template>
 
-
-<style></style>
 
