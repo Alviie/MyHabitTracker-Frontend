@@ -21,6 +21,7 @@ interface Habit {
   notes: string
   color: string
   icon: string
+  completions?: { date: string; completed: boolean }[]
 }
 
 // Typ für Habit-Stats
@@ -44,35 +45,57 @@ const endpoint = baseURL + '/habits'
 const habits = ref<Habit[]>([]) // reaktive Liste, die Backend-Daten speichert, Variable ref aktualisiert Template
 
 onMounted(async () => {
-
   const saved = localStorage.getItem('darkMode')
   if (saved === 'true') {
     document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
   }
+  const savedDay = localStorage.getItem('selectedDay')
+  const savedOffset = localStorage.getItem('weekOffset')
+  if (savedDay !== null) selectedDay.value = Number(savedDay)
+  if (savedOffset !== null) weekOffset.value = Number(savedOffset)
 
   try {
-    const response = await axios.get(endpoint) // JS-Bibliothek axios ermöglicht Kommunikation zw. Front- und Backend
-    console.log("response" + response)
-    habits.value = response.data // Backend wird geladen
-    console.log("Habits vom Backend:", habits.value)
-
+    const response = await axios.get(endpoint)
     habits.value = response.data.map((h: any) => ({
-      category: '',
-      targetAmount: 0,
-      targetUnit: '',
-      frequency: 'daily',
-      notes: '',
-      color: '#22c55e',
-      icon: '',
-      ...h,
+      category: '', targetAmount: 0, targetUnit: '', frequency: 'daily',
+      notes: '', color: '#22c55e', icon: '', completions: [],
+      ...h
     }))
 
+    await Promise.all(
+      habits.value.map(async (habit) => {
+        try {
+          const compResponse = await axios.get(
+            `${endpoint}/${habit.id}/completions?daysBack=90`
+          )
+          habit.completions = compResponse.data
+        } catch {
+          habit.completions = []
+        }
+      })
+    )
+
+    // 🔥 aktuelle Tages-Completion aus Backend in habitCompletions spiegeln
+    const todayKey: string = currentDateStr.value as string
+
+    habits.value.forEach(habit => {
+      const isDoneToday = habit.completions?.some(c =>
+        c.date === todayKey && c.completed
+      )
+
+      if (isDoneToday) {
+        const mapForDay = habitCompletions.value[todayKey] ?? {}
+        mapForDay[habit.id.toString()] = true
+        habitCompletions.value[todayKey] = mapForDay
+      }
+    })
   } catch (err) {
-    console.error("Fehler beim Laden der Habits:", err)
+    console.error('Fehler:', err)
   }
 })
+
+
+
 
 // Neues Habit hinzufügen und Liste aktualisieren
 const newHabitName = ref('')
@@ -209,70 +232,98 @@ const stats = computed<HabitStats>(() => {
 // WOCHEN- & TAG-NAVIGATION
 // ======================================
 
-const habitCompletions = ref<Record<string, boolean>[]>([])  // Array pro Tag
+const habitCompletions = ref<Record<string, Record<string, boolean>>>({})
+
 
 const selectedDay = ref(0)
-const weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
 
-const habitsForDay = computed(() => {
-  const dayIndex = selectedDay.value
-  const dayCompletions = habitCompletions.value[dayIndex] || {}
-
-  let filtered = habits.value
-  switch (filterMode.value) {
-    case 'open':
-      filtered = habits.value.filter(h => !dayCompletions[h.id.toString()])
-      break
-    case 'completed':
-      filtered = habits.value.filter(h => dayCompletions[h.id.toString()])
-      break
-  }
-
-  return filtered.map((habit: Habit) => ({
-    ...habit,
-    completed: dayCompletions[habit.id.toString()] || false
-  }))
-})
-
-// Toggle für spezifischen Tag
-const toggleHabit = async (habitId: number) => {
-  const currentCompleted = habitsForDay.value.find(h => h.id === habitId)?.completed || false
-  const newCompleted = !currentCompleted
-
-  try {
-    // Backend Call
-    const response = await axios.put(
-      `${endpoint}/${habitId}/complete?completed=${newCompleted}`,
-      null
-    )
-
-    // 1. Backend-Daten aktualisieren (Streak!)
-    habits.value = habits.value.map(h =>
-      h.id === habitId ? response.data : h
-    )
-
-    // 2. LOCAL syncen (für Tag-View!)
-    const dayIndex = selectedDay.value
-    if (!habitCompletions.value[dayIndex]) {
-      habitCompletions.value[dayIndex] = {}
-    }
-    habitCompletions.value[dayIndex][habitId.toString()] = newCompleted
-
-  } catch (err) {
-    console.error('Backend-Fehler:', err)
-  }
+const selectDay = (dayIndex: number) => {
+  selectedDay.value = dayIndex
+  localStorage.setItem('selectedDay', String(dayIndex))
 }
 
+const navigateWeek = (direction: number) => {
+  weekOffset.value += direction
+  localStorage.setItem('weekOffset', String(weekOffset.value))
+}
 const weekOffset = ref<number>(0)
 
 const currentDate = computed(() => {
   const today = new Date()
-  const todayDay = today.getDay()  // JS: So=0
-  const daysFromToday = selectedDay.value + (weekOffset.value * 7)
+  const daysFromToday = selectedDay.value + weekOffset.value * 7
   const date = new Date(today)
   date.setDate(today.getDate() + daysFromToday)
   return date
 })
+
+const currentDateStr = computed(() =>
+  currentDate.value.toISOString().split('T')[0]
+)
+
+const habitsForDay = computed(() => {
+  const dateKey = currentDateStr.value
+
+  const base = habits.value.map(habit => {
+    const completedToday = habit.completions?.some(
+      c => c.date === dateKey && c.completed
+    ) ?? false
+
+    return {
+      ...habit,
+      completedToday
+    }
+  })
+
+  switch (filterMode.value) {
+    case 'open':
+      return base.filter(h => !h.completedToday)
+    case 'completed':
+      return base.filter(h => h.completedToday)
+    default:
+      return base
+  }
+})
+
+
+// Toggle für spezifischen Tag
+const toggleHabit = async (habitId: number) => {
+  const dateKey = currentDateStr.value
+  const index = habits.value.findIndex(h => h.id === habitId)
+  if (index === -1) return
+
+  const habit = habits.value[index]
+
+  // Guard: wenn heute schon erledigt, nichts mehr tun
+  const alreadyCompletedToday = habit.completions?.some(
+    c => c.date === dateKey && c.completed
+  ) ?? false
+  if (alreadyCompletedToday) return
+
+  try {
+    const response = await axios.put(
+      `${endpoint}/${habitId}/complete?completed=true&date=${dateKey}`,
+      null
+    )
+
+    const updatedHabit: Habit = response.data
+    habits.value[index] = {
+      ...habits.value[index],
+      ...updatedHabit
+    }
+
+    if (!habits.value[index].completions) {
+      habits.value[index].completions = []
+    }
+    habits.value[index].completions!.push({ date: dateKey, completed: true })
+  } catch (err) {
+    console.error('Fehler:', err)
+  }
+}
+
+
+
+
+
 
 const getWeekdayHeader = (dayIndex: number) => {
   const today = new Date()
@@ -380,13 +431,13 @@ const toggleDarkMode = () => {
     <!-- WOCHEN-NAVIGATION (← Woche →) -->
     <!-- ====================================== -->
     <div class="flex items-center justify-center gap-4 mb-6">
-      <button @click="weekOffset--" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm">
+      <button @click="navigateWeek(-1)" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm">
         ← Woche
       </button>
       <span class="font-bold text-lg text-slate-900 dark:text-white">
     Woche {{ weekOffset === 0 ? 'aktuell' : `${Math.abs(weekOffset)} ${weekOffset < 0 ? 'zurück' : 'vor'}` }}
   </span>
-      <button @click="weekOffset++" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm">
+      <button @click="navigateWeek(1)" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm">
         Woche →
       </button>
     </div>
@@ -399,7 +450,7 @@ const toggleDarkMode = () => {
       <button v-for="day in 7" :key="day"
               class="flex-1 min-w-[60px] px-3 py-2 rounded-full text-sm font-medium transition-all"
               :class="selectedDay === day ? 'bg-emerald-500 text-white' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600'"
-              @click="selectedDay = day">
+              @click="selectDay(day)">
         {{ getWeekdayHeader(day) }}
       </button>
     </div>
@@ -461,10 +512,11 @@ const toggleDarkMode = () => {
           </button>
           <button
             class="px-4 py-2 rounded font-medium text-white"
-            :class="habit.completed ? 'bg-gray-500 hover:bg-gray-600' : 'bg-green-500 hover:bg-green-600'"
+            :class="habit.completedToday ? 'bg-gray-500 hover:bg-gray-600' : 'bg-green-500 hover:bg-green-600'"
             @click="toggleHabit(habit.id)"
+            :disabled="habit.completedToday"
           >
-            {{ habit.completed ? 'Offen' : 'Erledigt' }}
+            {{ habit.completedToday ? 'Erledigt' : 'Erledigen' }}
           </button>
           <button
             class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded font-medium transition-all"
