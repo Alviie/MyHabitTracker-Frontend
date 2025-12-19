@@ -11,7 +11,7 @@
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite-vue";
 
-html, body, #app {
+html, body {
   @apply bg-slate-50 dark:bg-slate-900 min-h-screen;
 }
 
@@ -47,9 +47,10 @@ html, body, #app {
 }
 
 #app {
-  width: 1600px;
-  margin: 20px auto;
-  padding: 10rem;
+  width: 100%;
+  max-width: 1600px;
+  margin: 40px auto;   /* Abstand oben/unten & Zentrierung */
+  padding: 0;          /* kein großes padding mehr */
   font-weight: normal;
 }
 

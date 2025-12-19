@@ -1,0 +1,326 @@
+<script setup lang="ts">
+import { ref, onMounted, computed } from 'vue'
+import axios from 'axios'
+
+interface Completion {
+  date: string
+  completed: boolean
+}
+
+interface Habit {
+  id: number
+  name: string
+  completed: boolean
+  streakCount: number
+  lastCompletedDate: string | null
+  category: string | null
+  targetAmount: number | null
+  targetUnit: string | null
+  frequency: string | null
+  notes: string | null
+  color: string | null
+  icon: string | null
+  completions?: Completion[]
+}
+
+const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
+const endpoint = baseURL + '/habits'
+
+const habits = ref<Habit[]>([])
+const loading = ref(true)
+
+const formatDate = (d: Date) => {
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+onMounted(async () => {
+  try {
+    const response = await axios.get(endpoint)
+    habits.value = response.data
+
+    await Promise.all(
+      habits.value.map(async habit => {
+        try {
+          const compRes = await axios.get(
+            `${endpoint}/${habit.id}/completions?daysBack=90`
+          )
+          habit.completions = compRes.data
+        } catch {
+          habit.completions = []
+        }
+      })
+    )
+  } finally {
+    loading.value = false
+  }
+})
+
+const totalHabits = computed(() => habits.value.length)
+
+const todayStr = computed(() => formatDate(new Date()))
+
+const habitsCompletedToday = computed(() =>
+  habits.value.filter(h =>
+    h.completions?.some(c => c.date === todayStr.value && c.completed)
+  ).length
+)
+
+const successRateForDays = (days: number) => {
+  if (!habits.value.length) return 0
+
+  const today = new Date()
+  const start = new Date()
+  start.setDate(today.getDate() - (days - 1))
+  const startStr = formatDate(start)
+  const endStr = formatDate(today)
+
+  let totalPossible = 0
+  let totalCompleted = 0
+
+  habits.value.forEach(habit => {
+    const comps = habit.completions ?? []
+    const inRange = comps.filter(
+      c => c.date >= startStr && c.date <= endStr
+    )
+    totalPossible += days
+    totalCompleted += inRange.filter(c => c.completed).length
+  })
+
+  if (totalPossible === 0) return 0
+  return Math.round((totalCompleted / totalPossible) * 100)
+}
+
+const success7Days = computed(() => successRateForDays(7))
+const success30Days = computed(() => successRateForDays(30))
+const success90Days = computed(() => successRateForDays(90))
+
+const longestStreakOverall = computed(() =>
+  habits.value.length
+    ? Math.max(...habits.value.map(h => h.streakCount))
+    : 0
+)
+
+const top3ByStreak = computed(() =>
+  [...habits.value]
+    .sort((a, b) => b.streakCount - a.streakCount)
+    .slice(0, 3)
+)
+
+const habitsWithStats = computed(() =>
+  habits.value.map(habit => {
+    const comps = habit.completions ?? []
+    const daysCompleted = comps.filter(c => c.completed).length
+    const rate =
+      comps.length > 0
+        ? Math.round((daysCompleted / comps.length) * 100)
+        : 0
+
+    return {
+      ...habit,
+      daysCompleted,
+      rate
+    }
+  })
+)
+
+const avgPerDayLast30 = computed(() => {
+  const today = new Date()
+  const start = new Date()
+  start.setDate(today.getDate() - 29)
+  const startStr = formatDate(start)
+  const endStr = formatDate(today)
+
+  let total = 0
+  habits.value.forEach(h =>
+    h.completions?.forEach(c => {
+      if (c.date >= startStr && c.date <= endStr && c.completed) total++
+    })
+  )
+  return Math.round(total / 30)
+})
+</script>
+
+<template>
+  <div>
+    <header
+      class="mb-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+    >
+      <div>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Statistiken
+        </h2>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">
+          Übersicht über deine Habits und deine Konsistenz der letzten 90 Tage.
+        </p>
+      </div>
+      <div
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 text-emerald-700 text-xs md:text-sm font-medium dark:bg-emerald-900/40 dark:text-emerald-200"
+      >
+        <span class="text-lg">🔥</span>
+        <span>Längster Streak: {{ longestStreakOverall }} Tage</span>
+      </div>
+    </header>
+
+    <!-- EIGENER Spacer direkt unter dem Header -->
+    <div class="h-16 md:h-24"></div>
+
+    <div
+      v-if="loading"
+      class="py-16 text-center text-slate-500 dark:text-slate-400"
+    >
+      Lade Statistiken …
+    </div>
+
+    <div
+      v-else
+      class="flex flex-col gap-12 md:gap-32"
+    >
+      <!-- KPI-Grid groß -->
+      <section class="" >
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-32">
+          <div
+            class="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 shadow-lg flex flex-col gap-2"
+          >
+            <span class="text-xs uppercase tracking-wide text-slate-400">Habits</span>
+            <span class="text-3xl md:text-4xl font-bold leading-tight">{{ totalHabits }}</span>
+            <span class="text-xs text-slate-400">Gesamt angelegt</span>
+          </div>
+
+          <div
+            class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
+          >
+            <span class="text-xs uppercase tracking-wide text-slate-400">Heute erledigt</span>
+            <span class="text-3xl md:text-4xl font-bold text-emerald-500">
+              {{ habitsCompletedToday }}
+            </span>
+            <span class="text-xs text-slate-500 dark:text-slate-400">
+              am {{ todayStr }}
+            </span>
+          </div>
+
+          <div
+            class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
+          >
+            <span class="text-xs uppercase tracking-wide text-slate-400">Erfolgsrate 7 Tage</span>
+            <span class="text-3xl md:text-4xl font-bold text-blue-500">
+              {{ success7Days }}%
+            </span>
+            <span class="text-xs text-slate-500 dark:text-slate-400">
+              Kurzfristige Konsistenz
+            </span>
+          </div>
+
+          <div
+            class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
+          >
+            <span class="text-xs uppercase tracking-wide text-slate-400">Ø / Tag (30 Tage)</span>
+            <span class="text-3xl md:text-4xl font-bold text-purple-500">
+              {{ avgPerDayLast30 }}
+            </span>
+            <span class="text-xs text-slate-500 dark:text-slate-400">
+              erledigte Habits pro Tag
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Erfolgsraten + Top 3 breiter -->
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div
+          class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 md:p-7 shadow-sm h-full"
+        >
+          <h3 class="text-lg md:text-xl font-semibold mb-4 text-slate-900 dark:text-white">
+            Erfolgsraten
+          </h3>
+          <div class="space-y-4 text-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-600 dark:text-slate-300">Letzte 7 Tage</span>
+              <span class="font-semibold text-blue-500">{{ success7Days }}%</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-slate-600 dark:text-slate-300">Letzte 30 Tage</span>
+              <span class="font-semibold text-indigo-500">{{ success30Days }}%</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-slate-600 dark:text-slate-300">Letzte 90 Tage</span>
+              <span class="font-semibold text-purple-500">{{ success90Days }}%</span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 md:p-7 shadow-sm h-full"
+        >
+          <h3 class="text-lg md:text-xl font-semibold mb-4 text-slate-900 dark:text-white">
+            Stärkste Habits
+          </h3>
+          <ul class="space-y-3 text-sm">
+            <li
+              v-for="habit in top3ByStreak"
+              :key="habit.id"
+              class="flex items-center justify-between"
+            >
+              <div class="flex items-center gap-2">
+                <span v-if="habit.icon" class="text-lg">{{ habit.icon }}</span>
+                <span class="text-slate-800 dark:text-slate-100">{{ habit.name }}</span>
+              </div>
+              <span class="text-emerald-500 font-semibold">
+                {{ habit.streakCount }} Tage 🔥
+              </span>
+            </li>
+            <li
+              v-if="top3ByStreak.length === 0"
+              class="text-slate-500 dark:text-slate-400 text-xs"
+            >
+              Noch keine Daten.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Habit-Tabelle breit -->
+      <section class="pb-4">
+        <h3 class="text-lg md:text-xl font-semibold mb-5 text-slate-900 dark:text-white">
+          Habits im Detail (letzte 90 Tage)
+        </h3>
+        <div
+          class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+        >
+          <table class="min-w-full text-sm text-left">
+            <thead class="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+            <tr>
+              <th class="px-4 py-3 font-medium">Habit</th>
+              <th class="px-4 py-3 font-medium">Tage erledigt</th>
+              <th class="px-4 py-3 font-medium">Erfolgsrate</th>
+              <th class="px-4 py-3 font-medium">Aktueller Streak</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+              v-for="habit in habitsWithStats"
+              :key="habit.id"
+              class="border-t border-slate-100 dark:border-slate-800"
+            >
+              <td class="px-4 py-3 flex items-center gap-2">
+                <span v-if="habit.icon" class="text-lg">{{ habit.icon }}</span>
+                <span>{{ habit.name }}</span>
+              </td>
+              <td class="px-4 py-3">{{ habit.daysCompleted }}</td>
+              <td class="px-4 py-3">{{ habit.rate }}%</td>
+              <td class="px-4 py-3">{{ habit.streakCount }}</td>
+            </tr>
+            <tr v-if="habitsWithStats.length === 0">
+              <td colspan="4" class="px-4 py-5 text-center text-slate-500 dark:text-slate-400">
+                Keine Habits vorhanden.
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+</template>

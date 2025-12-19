@@ -51,17 +51,17 @@ onMounted(async () => {
 
 
 <template>
-  <div class="pb-32 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <div class="pb-32">
+    <div class="px-4 sm:px-6 lg:px-8 py-12">
       <!-- Header -->
       <div class="text-center mb-16">
         <h1 class="text-5xl md:text-6xl font-black bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-6">
           🔥 Heatmap
         </h1>
-        <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-          Dein Fortschritt in den letzten 3 Monaten!
-        </p>
       </div>
+
+      <!-- Vertikaler Abstand zwischen Header und Loading/Grid -->
+      <div class="h-32"></div>
 
       <!-- Loading State -->
       <div v-if="!habits.length" class="text-center py-20">
