@@ -12,18 +12,22 @@
 @source "../node_modules/flowbite-vue";
 
 html, body {
-  @apply bg-slate-50 dark:bg-slate-900 min-h-screen;
+  @apply bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors duration-300;
 }
 
 @layer base {
   :root {
-    --text-primary: #111827;     /* Schwarz Light */
-    --text-secondary: #6b7280;   /* Grau Light */
+    --background: #f8fafc;
+    --text-primary: #1c1917;
+    --text-secondary: #57534e;
+    --border: rgba(0, 0, 0, 0.05);
   }
 
   .dark {
-    --text-primary: #f9fafb;     /* Weiss Dark */
-    --text-secondary: #d1d5db;   /* Hellgrau Dark */
+    --background: #030213;
+    --text-primary: #f5f5f4;    /* Stone-100 */
+    --text-secondary: #a8a29e;  /* Stone-400 */
+    --border: rgba(255, 255, 255, 0.1);
   }
 
   /* ALLE Texte automatisch! */
@@ -31,8 +35,6 @@ html, body {
     color: var(--text-primary);
   }
 }
-
-
 
 @layer base {
   html.light {
@@ -47,9 +49,9 @@ html, body {
 }
 
 #app {
-  width: 100%;
-  max-width: 1600px;
-  margin: 40px auto;   /* Abstand oben/unten & Zentrierung */
+  width:100%;
+  max-width: 100%;
+  margin: 0;   /* Abstand oben/unten & Zentrierung */
   padding: 0;          /* kein großes padding mehr */
   font-weight: normal;
 }

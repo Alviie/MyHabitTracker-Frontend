@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref, onMounted, computed} from 'vue'
 import axios from 'axios'
-import { FwbButton } from 'flowbite-vue'
+import HabitTrackerLogo from '@/views/HabitTrackerLogo.vue'
 
 // ======================================
 // DATENMODELL
@@ -317,54 +317,59 @@ const toggleHabit = async (habitId: number) => {
 </script>
 
 <template>
-  <div>
-    <h2 class="text-5xl font-extrabold light:text-black dark:text-white">Meine Habits</h2>
+  <div class="w-full px-15 py-0 mt-8">
 
-    <div class="h-24"></div>
-
+    <div class="px-0 py-0 mb-6 flex gap-2.5">
     <!-- ====================================== -->
     <!-- FILTER BUTTONS (Alle/Offen/Erledigt) -->
     <!-- ====================================== -->
-    <div class="mb-6 flex gap-2">
       <button
-        class="px-4 py-2 rounded font-medium text-white transition-all
-           bg-blue-500 hover:bg-blue-600"
-        :class="{ 'bg-blue-700': filterMode === 'all' }"
         @click="filterMode = 'all'"
-      >
-        Alle
+        class="px-5 py-2 rounded-lg transition-all font-bold text-medium"
+        style="font-family: Arial, sans-serif;"
+        :class="filterMode === 'all'
+          ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-xl shadow-violet-500/40 scale-105'
+          : 'bg-white/90 text-neutral-700 hover:bg-neutral-100 border-2 border-neutral-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700'"
+      > Alle
       </button>
-      <button
-        class="px-4 py-2 rounded font-medium text-white transition-all
-           bg-emerald-500 hover:bg-emerald-600"
-        :class="{ 'bg-emerald-600': filterMode === 'open' }"
-        @click="filterMode = 'open'"
-      >
-        Offen
-      </button>
-      <button
-        class="px-4 py-2 rounded font-medium text-white transition-all
-           bg-gray-500 hover:bg-gray-600"
-        :class="{ 'bg-gray-600': filterMode === 'completed' }"
-        @click="filterMode = 'completed'"
-      >
-        Erledigt
-      </button>
-    </div>
 
-    <div class="h-12"></div>
+      <button
+        @click="filterMode = 'open'"
+        class="px-5 py-2 rounded-lg transition-all font-bold text-medium"
+        style="font-family: Arial, sans-serif;"
+        :class="filterMode === 'open'
+          ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg shadow-violet-500/30'
+          : 'bg-white text-neutral-700 hover:bg-neutral-100 border-2 border-neutral-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700'"
+      > Offen
+      </button>
+
+      <button
+        @click="filterMode = 'completed'"
+        class="px-5 py-2 rounded-lg transition-all font-bold text-medium"
+        style="font-family: Arial, sans-serif;"
+        :class="filterMode === 'completed'
+          ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg shadow-violet-500/30 border-2 border-transparent'
+          : 'bg-white text-neutral-700 hover:bg-neutral-100 border-2 border-neutral-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700'"
+      > Erledigt
+      </button>
+
+    </div>
 
     <!-- ====================================== -->
     <!-- WOCHEN-NAVIGATION (← Woche →) -->
     <!-- ====================================== -->
-    <div class="flex items-center justify-center gap-4 mb-6">
-      <button @click="navigateWeek(-1)" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm">
+    <div class="flex items-center justify-center gap-8 mb-6">
+      <button @click="navigateWeek(-1)"
+              class="px-5 py-2 bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-700 hover:to-pink-700 text-white rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-fuchsia-500/30 font-medium active:scale-95">
         ← Woche
       </button>
-      <span class="font-bold text-lg text-slate-900 dark:text-white">
-    Woche {{ weekOffset === 0 ? 'aktuell' : `${Math.abs(weekOffset)} ${weekOffset < 0 ? 'zurück' : 'vor'}` }}
-  </span>
-      <button @click="navigateWeek(1)" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm">
+
+      <span class="text-slate-700 dark:text-slate-200 font-semibold text-lg tracking-tight">
+        Woche {{ weekOffset === 0 ? 'aktuell' : `${Math.abs(weekOffset)} ${weekOffset < 0 ? 'zurück' : 'vor'}` }}
+      </span>
+
+      <button @click="navigateWeek(1)"
+              class="px-5 py-2 bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-700 hover:to-pink-700 text-white rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-fuchsia-500/30 font-medium active:scale-95">
         Woche →
       </button>
     </div>
