@@ -81,9 +81,6 @@ onMounted(async () => {
   }
 })
 
-
-
-
 // Neues Habit hinzufügen und Liste aktualisieren
 const newHabitName = ref('')
 

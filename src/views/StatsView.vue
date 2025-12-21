@@ -146,26 +146,25 @@ const avgPerDayLast30 = computed(() => {
 <template>
   <div>
     <header
-      class="mb-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+      class=" flex flex-col md:flex-row md:items-center md:justify-between gap-12 fx-auto px-12 py-6 text-center md:text-left"
     >
       <div>
-        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Statistiken
+        <h2 class="text-5xl md:text-5xl font-extrabold text-violet-600 dark:text-violet-600 tracking-tight"
+            style="font-family: Arial, sans-serif;">
+          My Statistics
         </h2>
-        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">
+        <p class="py-2 text-slate-500 dark:text-white text-medium mt-1"
+           style="font-family: Arial, sans-serif;">
           Übersicht über deine Habits und deine Konsistenz der letzten 90 Tage.
         </p>
       </div>
       <div
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 text-emerald-700 text-xs md:text-sm font-medium dark:bg-emerald-900/40 dark:text-emerald-200"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-fuchsia-400 to-pink-400 hover:from-fuchsia-500 text-white text-xs md:text-sm font-medium dark:bg-emerald-900/40 dark:hover:text-white"
       >
         <span class="text-lg">🔥</span>
         <span>Längster Streak: {{ longestStreakOverall }} Tage</span>
       </div>
     </header>
-
-    <!-- EIGENER Spacer direkt unter dem Header -->
-    <div class="h-16 md:h-24"></div>
 
     <div
       v-if="loading"
@@ -180,47 +179,47 @@ const avgPerDayLast30 = computed(() => {
     >
       <!-- KPI-Grid groß -->
       <section class="" >
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-32">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 px-12 py-4">
           <div
-            class="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 shadow-lg flex flex-col gap-2"
+            class="rounded-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
           >
-            <span class="text-xs uppercase tracking-wide text-slate-400">Habits</span>
-            <span class="text-3xl md:text-4xl font-bold leading-tight">{{ totalHabits }}</span>
-            <span class="text-xs text-slate-400">Gesamt angelegt</span>
+            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-white px-4">Habits</span>
+            <span class="text-3xl md:text-4xl font-bold text-pink-500 px-4">{{ totalHabits }}</span>
+            <span class="text-medium text-slate-600 dark:text-white px-4">Gesamt angelegt</span>
           </div>
 
           <div
-            class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
+            class="rounded-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
           >
-            <span class="text-xs uppercase tracking-wide text-slate-400">Heute erledigt</span>
-            <span class="text-3xl md:text-4xl font-bold text-emerald-500">
+            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-white px-4">Heute erledigt</span>
+            <span class="text-3xl md:text-4xl font-bold text-green-400 px-4">
               {{ habitsCompletedToday }}
             </span>
-            <span class="text-xs text-slate-500 dark:text-slate-400">
+            <span class="text-medium text-slate-600 dark:text-white px-4">
               am {{ todayStr }}
             </span>
           </div>
 
           <div
-            class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
+            class="rounded-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
           >
-            <span class="text-xs uppercase tracking-wide text-slate-400">Erfolgsrate 7 Tage</span>
-            <span class="text-3xl md:text-4xl font-bold text-blue-500">
+            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-white px-4">Erfolgsrate 7 Tage</span>
+            <span class="text-3xl md:text-4xl font-bold text-blue-500 px-4">
               {{ success7Days }}%
             </span>
-            <span class="text-xs text-slate-500 dark:text-slate-400">
+            <span class="text-medium text-slate-600 dark:text-white px-4">
               Kurzfristige Konsistenz
             </span>
           </div>
 
           <div
-            class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
+            class="rounded-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
           >
-            <span class="text-xs uppercase tracking-wide text-slate-400">Ø / Tag (30 Tage)</span>
-            <span class="text-3xl md:text-4xl font-bold text-purple-500">
+            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-white px-4">Ø / Tag (30 Tage)</span>
+            <span class="text-3xl md:text-4xl font-bold text-purple-500 px-4">
               {{ avgPerDayLast30 }}
             </span>
-            <span class="text-xs text-slate-500 dark:text-slate-400">
+            <span class="text-medium text-slate-600 dark:text-white px-4">
               erledigte Habits pro Tag
             </span>
           </div>

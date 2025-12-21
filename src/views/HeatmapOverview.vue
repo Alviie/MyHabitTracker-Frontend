@@ -56,7 +56,7 @@ onMounted(async () => {
       <!-- Header -->
       <div class="flex items-center justify-center gap-3 mb-12">
         <h2 class="text-6xl font-bold text-violet-600"
-            style="font-family: Arial, sans-serif;">🔥Heatmap
+            style="font-family: Arial, sans-serif;">🔥My Heatmap
         </h2>
       </div>
 

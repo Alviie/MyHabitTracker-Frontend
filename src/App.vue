@@ -41,7 +41,7 @@ watch(darkMode, (v) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-slate-950 pt-0">
+  <div class="min-h-screen bg-slate-150 dark:bg-slate-950 pt-0">
 
     <header class="sticky top-0 z-50 pt-4 px-4 lg:px-11">
       <div class="bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-2xl shadow-sm px-6 py-4 flex justify-between items-center">
