@@ -51,17 +51,17 @@ onMounted(async () => {
 
 
 <template>
-  <div class="pb-32">
-    <div class="px-4 sm:px-6 lg:px-8 py-12">
+  <div class="pb-24">
+    <div class="px-4 sm:px-6 lg:px-11 py-12">
       <!-- Header -->
-      <div class="text-center mb-16">
-        <h1 class="text-5xl md:text-6xl font-black bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-6">
-          🔥 Heatmap
-        </h1>
+      <div class="flex items-center justify-center gap-3 mb-12">
+        <h2 class="text-6xl font-bold text-violet-600"
+            style="font-family: Arial, sans-serif;">🔥Heatmap
+        </h2>
       </div>
 
       <!-- Vertikaler Abstand zwischen Header und Loading/Grid -->
-      <div class="h-32"></div>
+      <div class="h-10"></div>
 
       <!-- Loading State -->
       <div v-if="!habits.length" class="text-center py-20">
