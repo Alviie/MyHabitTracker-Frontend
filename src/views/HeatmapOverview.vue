@@ -65,7 +65,8 @@ onMounted(async () => {
 
       <!-- Loading State -->
       <div v-if="!habits.length" class="text-center py-20">
-        <div class="w-20 h-20 border-4 border-emerald-200 border-t-emerald-500 rounded-full animate-spin mx-auto mb-4"></div>
+        <div class="w-20 h-20 border-4 border-violet-100 border-t-violet-600 rounded-full animate-spin mx-auto mb-6">
+        </div>
         <p class="text-slate-500 dark:text-slate-400">Lade Heatmaps...</p>
       </div>
 
