@@ -360,16 +360,19 @@ const toggleHabit = async (habitId: number) => {
     <!-- ====================================== -->
     <div class="flex items-center justify-center gap-8 mb-6">
       <button @click="navigateWeek(-1)"
-              class="px-5 py-2 bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-700 hover:to-pink-700 text-white rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-fuchsia-500/30 font-medium active:scale-95">
+              class="px-5 py-2 bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-700 hover:to-pink-700 text-white rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-fuchsia-500/30 font-medium active:scale-95"
+              style="font-family: Arial, sans-serif;">
         ← Woche
       </button>
 
-      <span class="text-slate-700 dark:text-slate-200 font-semibold text-lg tracking-tight">
+      <span class="text-slate-700 dark:text-slate-200 font-semibold text-lg tracking-tight"
+            style="font-family: Arial, sans-serif;">
         Woche {{ weekOffset === 0 ? 'aktuell' : `${Math.abs(weekOffset)} ${weekOffset < 0 ? 'zurück' : 'vor'}` }}
       </span>
 
       <button @click="navigateWeek(1)"
-              class="px-5 py-2 bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-700 hover:to-pink-700 text-white rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-fuchsia-500/30 font-medium active:scale-95">
+              class="px-5 py-2 bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-700 hover:to-pink-700 text-white rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-fuchsia-500/30 font-medium active:scale-95"
+              style="font-family: Arial, sans-serif;">
         Woche →
       </button>
     </div>
@@ -379,14 +382,15 @@ const toggleHabit = async (habitId: number) => {
     <!-- ====================================== -->
     <!-- WOCHENTAGE BUTTONS (So Mo Di Mi Do Fr Sa) -->
     <!-- ====================================== -->
-    <div class="flex gap-1 mb-6 overflow-x-auto pb-2">
+    <div class="grid grid-cols-7 gap-2 mb-6">
       <button
         v-for="dayIndex in 7"
         :key="dayIndex"
-        class="flex-1 min-w-[60px] px-3 py-2 rounded-full text-sm font-medium transition-all"
+        class="py-3 px-1 rounded-xl text-center transition-all text-sm font-semibold tracking-tight outline-none"
+        style="font-family: Arial, sans-serif;"
         :class="selectedDay === (dayIndex - 1)
-      ? 'bg-emerald-500 text-white'
-      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600'"
+          ? 'bg-gradient-to-br from-violet-600 to-purple-600 text-white shadow-lg shadow-violet-500/30'
+          : 'bg-white text-neutral-600 border-2 border-neutral-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700'"
         @click="selectDay(dayIndex - 1)"
       >
         {{ getWeekdayHeader(dayIndex - 1) }}

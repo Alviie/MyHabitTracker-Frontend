@@ -44,7 +44,7 @@ watch(darkMode, (v) => {
   <div class="min-h-screen bg-slate-50 dark:bg-slate-950 pt-0">
 
     <header class="sticky top-0 z-50 bg-transparent h-auto">
-      <div class="w-full px-8 py-6 flex justify-between items-start pt-6">
+      <div class="w-full px-11 py-6 flex justify-between items-start pt-6">
 
         <div class="flex-shrink-0 -mt-2">
           <HabitTrackerLogo size="lg" />
