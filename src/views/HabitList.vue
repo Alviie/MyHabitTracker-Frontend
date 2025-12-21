@@ -321,7 +321,7 @@ const toggleHabit = async (habitId: number) => {
 
     <div class="px-0 py-0 mb-6 flex gap-2.5">
     <!-- ====================================== -->
-    <!-- FILTER BUTTONS (Alle/Offen/Erledigt) -->
+    <!-- FILTER BUTTONS (Alle/Offen/Erledigt)   -->
     <!-- ====================================== -->
       <button
         @click="filterMode = 'all'"
@@ -356,7 +356,7 @@ const toggleHabit = async (habitId: number) => {
     </div>
 
     <!-- ====================================== -->
-    <!-- WOCHEN-NAVIGATION (← Woche →) -->
+    <!-- WOCHEN-NAVIGATION (← Woche →)          -->
     <!-- ====================================== -->
     <div class="flex items-center justify-center gap-8 mb-6">
       <button @click="navigateWeek(-1)"
@@ -379,9 +379,9 @@ const toggleHabit = async (habitId: number) => {
 
     <div class="h-6"></div>
 
-    <!-- ====================================== -->
-    <!-- WOCHENTAGE BUTTONS (So Mo Di Mi Do Fr Sa) -->
-    <!-- ====================================== -->
+    <!-- ========================================== -->
+    <!-- WOCHENTAGE BUTTONS (So Mo Di Mi Do Fr Sa)  -->
+    <!-- ========================================== -->
     <div class="grid grid-cols-7 gap-2 mb-6">
       <button
         v-for="dayIndex in 7"
@@ -399,9 +399,8 @@ const toggleHabit = async (habitId: number) => {
 
     <div class="h-6"></div>
 
-
     <!-- ====================================== -->
-    <!-- AKTUELLES DATUM -->
+    <!-- AKTUELLES DATUM                        -->
     <!-- ====================================== -->
     <div class="mb-6 text-center">
       <h3 class="text-lg font-semibold text-neutral-800 dark:text-neutral-200 tracking-tight"
@@ -412,16 +411,21 @@ const toggleHabit = async (habitId: number) => {
     <div class="h-5"></div>
 
     <!-- ====================================== -->
-    <!-- NEUES HABIT HINZUFÜGEN -->
+    <!-- NEUES HABIT HINZUFÜGEN                 -->
     <!-- ====================================== -->
     <div class="mb-6 flex gap-3">
       <input v-model="newHabitName" type="text" placeholder="Neues Habit..."
-             class="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-800" />
+             class="flex-1 px-4 py-3 bg-white border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-neutral-900 placeholder:text-neutral-400 transition-all dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100"
+      />
+
       <button @click="addHabit"
-              class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded font-medium">
-        Hinzufügen
+              class="px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl font-semibold tracking-tight transition-all shadow-lg shadow-violet-500/30 active:scale-95"
+              style="font-family: Arial, sans-serif;"
+      > Hinzufügen
       </button>
     </div>
+
+    <div class="h-5"></div>
 
     <!-- ====================================== -->
     <!-- HABITS LISTE (mit Icon, Kategorie-Tag, Buttons) -->
