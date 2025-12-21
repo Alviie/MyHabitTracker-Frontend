@@ -153,13 +153,13 @@ const avgPerDayLast30 = computed(() => {
             style="font-family: Arial, sans-serif;">
           My Statistics
         </h2>
-        <p class="py-2 text-slate-500 dark:text-white text-medium mt-1"
+        <p class="py-2 text-slate-500 dark:text-slate-300 text-medium mt-1"
            style="font-family: Arial, sans-serif;">
           Übersicht über deine Habits und deine Konsistenz der letzten 90 Tage.
         </p>
       </div>
       <div
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-fuchsia-400 to-pink-400 hover:from-fuchsia-500 text-white text-xs md:text-sm font-medium dark:bg-emerald-900/40 dark:hover:text-white"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-fuchsia-400 to-pink-400 hover:from-fuchsia-500 text-slate-300 text-xs md:text-sm font-medium dark:bg-emerald-900/40 dark:hover:text-white"
       >
         <span class="text-lg">🔥</span>
         <span>Längster Streak: {{ longestStreakOverall }} Tage</span>
@@ -175,7 +175,7 @@ const avgPerDayLast30 = computed(() => {
 
     <div
       v-else
-      class="flex flex-col gap-12 md:gap-32"
+      class="flex flex-col gap-12 md:gap-5"
     >
       <!-- KPI-Grid groß -->
       <section class="" >
@@ -183,19 +183,25 @@ const avgPerDayLast30 = computed(() => {
           <div
             class="rounded-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
           >
-            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-white px-4">Habits</span>
-            <span class="text-3xl md:text-4xl font-bold text-pink-500 px-4">{{ totalHabits }}</span>
-            <span class="text-medium text-slate-600 dark:text-white px-4">Gesamt angelegt</span>
+            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-slate-300 px-4"
+                  style="font-family: Arial, sans-serif;">Habits 📦</span>
+            <span class="text-3xl md:text-4xl font-bold text-pink-500 px-4"
+                  style="font-family: Arial, sans-serif;">{{ totalHabits }}</span>
+            <span class="text-medium text-slate-600 dark:text-slate-300 px-4"
+                  style="font-family: Arial, sans-serif;">Gesamt angelegt</span>
           </div>
 
           <div
             class="rounded-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
           >
-            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-white px-4">Heute erledigt</span>
-            <span class="text-3xl md:text-4xl font-bold text-green-400 px-4">
+            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-slate-300 px-4"
+                  style="font-family: Arial, sans-serif;">Heute erledigt 📅</span>
+            <span class="text-3xl md:text-4xl font-bold text-green-400 px-4"
+                  style="font-family: Arial, sans-serif;">
               {{ habitsCompletedToday }}
             </span>
-            <span class="text-medium text-slate-600 dark:text-white px-4">
+            <span class="text-medium text-slate-600 dark:text-slate-300 px-4"
+                  style="font-family: Arial, sans-serif;">
               am {{ todayStr }}
             </span>
           </div>
@@ -203,11 +209,14 @@ const avgPerDayLast30 = computed(() => {
           <div
             class="rounded-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
           >
-            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-white px-4">Erfolgsrate 7 Tage</span>
-            <span class="text-3xl md:text-4xl font-bold text-blue-500 px-4">
+            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-slate-300 px-4"
+                  style="font-family: Arial, sans-serif;">Erfolgsrate 7 Tage 📈</span>
+            <span class="text-3xl md:text-4xl font-bold text-blue-500 px-4"
+                  style="font-family: Arial, sans-serif;">
               {{ success7Days }}%
             </span>
-            <span class="text-medium text-slate-600 dark:text-white px-4">
+            <span class="text-medium text-slate-600 dark:text-slate-300 px-4"
+                  style="font-family: Arial, sans-serif;">
               Kurzfristige Konsistenz
             </span>
           </div>
@@ -215,11 +224,14 @@ const avgPerDayLast30 = computed(() => {
           <div
             class="rounded-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
           >
-            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-white px-4">Ø / Tag (30 Tage)</span>
-            <span class="text-3xl md:text-4xl font-bold text-purple-500 px-4">
+            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-slate-300 px-4"
+                  style="font-family: Arial, sans-serif;">Ø / Tag (30 Tage) ⏱</span>
+            <span class="text-3xl md:text-4xl font-bold text-purple-500 px-4"
+                  style="font-family: Arial, sans-serif;">
               {{ avgPerDayLast30 }}
             </span>
-            <span class="text-medium text-slate-600 dark:text-white px-4">
+            <span class="text-medium text-slate-600 dark:text-slate-300 px-4"
+                  style="font-family: Arial, sans-serif;">
               erledigte Habits pro Tag
             </span>
           </div>
@@ -227,14 +239,15 @@ const avgPerDayLast30 = computed(() => {
       </section>
 
       <!-- Erfolgsraten + Top 3 breiter -->
-      <section class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 px-12">
         <div
           class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 md:p-7 shadow-sm h-full"
         >
-          <h3 class="text-lg md:text-xl font-semibold mb-4 text-slate-900 dark:text-white">
-            Erfolgsraten
+          <h3 class="text-xl md:text-xl font-semibold mb-4 text-slate-900 dark:text-slate-300 px-2"
+              style="font-family: Arial, sans-serif;">
+            Erfolgsraten 🎯
           </h3>
-          <div class="space-y-4 text-sm">
+          <div class="space-y-2 text-medium px-2">
             <div class="flex items-center justify-between">
               <span class="text-slate-600 dark:text-slate-300">Letzte 7 Tage</span>
               <span class="font-semibold text-blue-500">{{ success7Days }}%</span>
@@ -253,10 +266,10 @@ const avgPerDayLast30 = computed(() => {
         <div
           class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 md:p-7 shadow-sm h-full"
         >
-          <h3 class="text-lg md:text-xl font-semibold mb-4 text-slate-900 dark:text-white">
-            Stärkste Habits
+          <h3 class="text-xl md:text-xl font-semibold mb-4 text-slate-900 dark:text-white px-2">
+            Stärkste Habits 💪
           </h3>
-          <ul class="space-y-3 text-sm">
+          <ul class="space-y-2 text-medium px-2">
             <li
               v-for="habit in top3ByStreak"
               :key="habit.id"
@@ -264,15 +277,15 @@ const avgPerDayLast30 = computed(() => {
             >
               <div class="flex items-center gap-2">
                 <span v-if="habit.icon" class="text-lg">{{ habit.icon }}</span>
-                <span class="text-slate-800 dark:text-slate-100">{{ habit.name }}</span>
+                <span class="text-slate-800 dark:text-slate-300">{{ habit.name }}</span>
               </div>
-              <span class="text-emerald-500 font-semibold">
+              <span class="text-green-400 font-semibold">
                 {{ habit.streakCount }} Tage 🔥
               </span>
             </li>
             <li
               v-if="top3ByStreak.length === 0"
-              class="text-slate-500 dark:text-slate-400 text-xs"
+              class="text-slate-500 dark:text-slate-300 text-xs"
             >
               Noch keine Daten.
             </li>
