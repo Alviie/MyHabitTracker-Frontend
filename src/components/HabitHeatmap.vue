@@ -46,15 +46,15 @@ const completedDays = computed(() =>
 <template>
   <!-- REST BLEIBT GLEICH wie vorher -->
   <div class="p-6 bg-white rounded-2xl shadow-lg border border-slate-200 dark:bg-slate-800 dark:border-slate-700 hover:shadow-2xl transition-all">
-    <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-3">
-        <div v-if="props.habit.icon" class="text-2xl p-2 bg-slate-100 rounded-xl dark:bg-slate-900">
+    <div class="flex items-center justify-between mb-9">
+      <div class="flex items-center gap-4">
+        <div v-if="props.habit.icon" class="text-2xl p-4 bg-slate-100 rounded-xl dark:bg-slate-900">
           {{ props.habit.icon }}
         </div>
         <div>
           <h3 class="text-xl font-bold text-slate-900 dark:text-white">{{ props.habit.name }}</h3>
           <div class="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
-            <span>🟢 {{ completedDays }} / {{ DAYS_BACK }} Tage</span>
+            <span>🟣 {{ completedDays }} / {{ DAYS_BACK }} Tage</span>
             <span>{{ Math.round((completedDays / DAYS_BACK) * 100) }}% Konsistenz</span>
           </div>
         </div>
@@ -69,8 +69,8 @@ const completedDays = computed(() =>
           :key="day.date"
           class="relative w-4 h-4 rounded cursor-pointer hover:scale-125 transition-all duration-200 group border border-slate-200/30 dark:border-slate-700/50 shadow-sm"
           :class="day.completed
-            ? 'bg-emerald-500 shadow-emerald-300/50 hover:bg-emerald-600 hover:shadow-emerald-400/70'
-            : 'bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600'"
+            ? 'bg-violet-600 shadow-sm shadow-violet-500/20'
+            : 'bg-neutral-200 dark:bg-slate-900'"
           :title="`${day.date}: ${day.completed ? '✅ Erledigt' : '❌ Verpasst'}`"
         />
       </div>

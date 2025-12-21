@@ -71,12 +71,13 @@ onMounted(async () => {
       </div>
 
       <!-- Heatmaps Grid (Responsive) -->
-      <div v-else class="grid gap-8 sm:gap-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3">
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <HabitHeatmap
           v-for="habit in habits"
           :key="habit.id"
           :habit="habit"
-          class="animate-fade-in-up"
+          class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-neutral-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all animate-fade-in-up"
+          :style="{ animationDelay: `${(index + 1) * 0.1}s` }"
         />
       </div>
 
