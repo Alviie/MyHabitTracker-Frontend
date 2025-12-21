@@ -404,10 +404,12 @@ const toggleHabit = async (habitId: number) => {
     <!-- AKTUELLES DATUM -->
     <!-- ====================================== -->
     <div class="mb-6 text-center">
-      <h3 class="font-bold text-2xl text-black dark:text-white">{{ currentDate.toLocaleDateString('de-DE') }}</h3>
+      <h3 class="text-lg font-semibold text-neutral-800 dark:text-neutral-200 tracking-tight"
+          style="font-family: Arial, sans-serif;"
+      >{{ currentDate.toLocaleDateString('de-DE') }}</h3>
     </div>
 
-    <div class="h-6"></div>
+    <div class="h-5"></div>
 
     <!-- ====================================== -->
     <!-- NEUES HABIT HINZUFÜGEN -->
