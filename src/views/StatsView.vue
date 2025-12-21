@@ -33,7 +33,8 @@ const formatDate = (d: Date) => {
   const year = d.getFullYear()
   const month = String(d.getMonth() + 1).padStart(2, '0')
   const day = String(d.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
+
+  return `${day}-${month}-${year}`
 }
 
 onMounted(async () => {
@@ -159,7 +160,7 @@ const avgPerDayLast30 = computed(() => {
         </p>
       </div>
       <div
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-fuchsia-400 to-pink-400 hover:from-fuchsia-500 text-slate-300 text-xs md:text-sm font-medium dark:bg-emerald-900/40 dark:hover:text-white"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-fuchsia-400 to-pink-400 hover:from-fuchsia-500 text-xs md:text-sm font-medium dark:hover:text-white"
       >
         <span class="text-lg">🔥</span>
         <span>Längster Streak: {{ longestStreakOverall }} Tage</span>
