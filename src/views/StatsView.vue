@@ -183,8 +183,7 @@ const avgPerDayLast30 = computed(() => {
           <div
             class="rounded-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
           >
-            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-slate-300 px-4"
-                  style="font-family: Arial, sans-serif;">Habits 📦</span>
+            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-slate-300 px-4">Habits 📦</span>
             <span class="text-3xl md:text-4xl font-bold text-pink-500 px-4"
                   style="font-family: Arial, sans-serif;">{{ totalHabits }}</span>
             <span class="text-medium text-slate-600 dark:text-slate-300 px-4"
@@ -194,8 +193,7 @@ const avgPerDayLast30 = computed(() => {
           <div
             class="rounded-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
           >
-            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-slate-300 px-4"
-                  style="font-family: Arial, sans-serif;">Heute erledigt 📅</span>
+            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-slate-300 px-4">Heute erledigt 📅</span>
             <span class="text-3xl md:text-4xl font-bold text-green-400 px-4"
                   style="font-family: Arial, sans-serif;">
               {{ habitsCompletedToday }}
@@ -209,8 +207,7 @@ const avgPerDayLast30 = computed(() => {
           <div
             class="rounded-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
           >
-            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-slate-300 px-4"
-                  style="font-family: Arial, sans-serif;">Erfolgsrate 7 Tage 📈</span>
+            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-slate-300 px-4">Erfolgsrate 7 Tage 📈</span>
             <span class="text-3xl md:text-4xl font-bold text-blue-500 px-4"
                   style="font-family: Arial, sans-serif;">
               {{ success7Days }}%
@@ -224,8 +221,7 @@ const avgPerDayLast30 = computed(() => {
           <div
             class="rounded-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 shadow-sm flex flex-col gap-2"
           >
-            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-slate-300 px-4"
-                  style="font-family: Arial, sans-serif;">Ø / Tag (30 Tage) ⏱</span>
+            <span class="text-medium uppercase tracking-wide text-slate-600 dark:text-slate-300 px-4">Ø / Tag (30 Tage) ⏱</span>
             <span class="text-3xl md:text-4xl font-bold text-purple-500 px-4"
                   style="font-family: Arial, sans-serif;">
               {{ avgPerDayLast30 }}
@@ -294,8 +290,8 @@ const avgPerDayLast30 = computed(() => {
       </section>
 
       <!-- Habit-Tabelle breit -->
-      <section class="pb-4">
-        <h3 class="text-lg md:text-xl font-semibold mb-5 text-slate-900 dark:text-white">
+      <section class="pb-10 px-12">
+        <h3 class="text-lg md:text-xl font-semibold mb-5 text-slate-900 dark:text-slate-200">
           Habits im Detail (letzte 90 Tage)
         </h3>
         <div
@@ -304,7 +300,7 @@ const avgPerDayLast30 = computed(() => {
           <table class="min-w-full text-sm text-left">
             <thead class="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
             <tr>
-              <th class="px-4 py-3 font-medium">Habit</th>
+              <th class="px-4 py-3 font-lg">Habit</th>
               <th class="px-4 py-3 font-medium">Tage erledigt</th>
               <th class="px-4 py-3 font-medium">Erfolgsrate</th>
               <th class="px-4 py-3 font-medium">Aktueller Streak</th>
