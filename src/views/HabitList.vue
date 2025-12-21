@@ -358,7 +358,7 @@ const toggleHabit = async (habitId: number) => {
     <!-- ====================================== -->
     <!-- WOCHEN-NAVIGATION (← Woche →)          -->
     <!-- ====================================== -->
-    <div class="flex items-center justify-center gap-8 mb-6">
+    <div class="flex items-center justify-center gap-6 mb-4">
       <button @click="navigateWeek(-1)"
               class="px-5 py-2 bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-700 hover:to-pink-700 text-white rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-fuchsia-500/30 font-medium active:scale-95"
               style="font-family: Arial, sans-serif;">
@@ -377,7 +377,7 @@ const toggleHabit = async (habitId: number) => {
       </button>
     </div>
 
-    <div class="h-6"></div>
+    <div class="h-4"></div>
 
     <!-- ========================================== -->
     <!-- WOCHENTAGE BUTTONS (So Mo Di Mi Do Fr Sa)  -->
@@ -397,25 +397,26 @@ const toggleHabit = async (habitId: number) => {
       </button>
     </div>
 
-    <div class="h-6"></div>
+    <div class="h-4"></div>
 
     <!-- ====================================== -->
     <!-- AKTUELLES DATUM                        -->
     <!-- ====================================== -->
-    <div class="mb-6 text-center">
+    <div class="text-center">
       <h3 class="text-lg font-semibold text-neutral-800 dark:text-neutral-200 tracking-tight"
           style="font-family: Arial, sans-serif;"
       >{{ currentDate.toLocaleDateString('de-DE') }}</h3>
     </div>
 
-    <div class="h-5"></div>
+    <div class="h-4"></div>
 
     <!-- ====================================== -->
     <!-- NEUES HABIT HINZUFÜGEN                 -->
     <!-- ====================================== -->
-    <div class="mb-6 flex gap-3">
+    <div class="mb-4 flex gap-3">
       <input v-model="newHabitName" type="text" placeholder="Neues Habit..."
              class="flex-1 px-4 py-3 bg-white border-2 border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-neutral-900 placeholder:text-neutral-400 transition-all dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100"
+             style="font-family: Arial, sans-serif;"
       />
 
       <button @click="addHabit"
@@ -430,48 +431,59 @@ const toggleHabit = async (habitId: number) => {
     <!-- ====================================== -->
     <!-- HABITS LISTE (mit Icon, Kategorie-Tag, Buttons) -->
     <!-- ====================================== -->
-    <ul>
+    <ul class="space-y-4" style="font-family: Arial, sans-serif;">
       <li
         v-for="habit in habitsForDay"
         :key="habit.id"
-        class="p-4 bg-white border dark:bg-slate-800 dark:border-slate-700 rounded-lg mb-2 flex justify-between items-center"
+        class="bg-white dark:bg-slate-800 rounded-xl p-5 border border-neutral-200 dark:border-slate-700 hover:shadow-md transition-all flex justify-between items-center"
       >
-        <div class="flex-1">
-          <h3 class="text-xl font-bold flex items-center gap-2">
-            <span v-if="habit.icon" class="text-lg">{{ habit.icon }}</span>
-            <span :style="{ color: habit.color }">{{ habit.name }}</span>
-          </h3>
+        <div class="flex items-center gap-3">
+          <span v-if="habit.icon" class="text-2xl">{{ habit.icon }}</span>
 
-          <!-- Streak Anzeige -->
-          <p class="text-emerald-400">
-            Streak: {{ habit.streakCount }} 🔥 {{ habit.completed ? '✓' : '' }}
-          </p>
-          <!-- Kategorie Tag -->
-          <div v-if="habit.category" class="mt-1">
-            <span class="px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
+          <div>
+            <div class="text-lg text-neutral-800 dark:text-white" :style="{ color: habit.color }">
+              {{ habit.name }}
+            </div>
+
+            <div class="flex items-center gap-3 mt-1">
+
+          <span class="text-sm text-green-600 font-medium">
+            Streak: {{ habit.streakCount }} 🔥
+          </span>
+              <span v-if="habit.completedToday" class="text-violet-600 font-bold text-medium"
+              >✓
+              </span>
+
+              <span
+                v-if="habit.category"
+                class="px-2.5 py-0.5 bg-gradient-to-r from-violet-50 to-purple-50 text-violet-700 dark:from-slate-700 dark:to-slate-600 dark:text-violet-200 text-xs rounded-full border border-violet-200 dark:border-slate-500"
+              >
             {{ habit.category }}
-            </span>
+          </span>
+            </div>
           </div>
         </div>
 
         <!-- Buttons: Bearbeiten / Erledigt / Löschen -->
         <div class="flex gap-2">
           <button
-            class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300 text-slate-800 text-sm font-medium"
+            class="px-4 py-2 bg-neutral-300 hover:bg-neutral-200 text-neutral-700 rounded-xl text-sm font-medium transition-colors"
             @click="startEdit(habit)"
-          >
-            Bearbeiten
+          > Bearbeiten
           </button>
+
           <button
-            class="px-4 py-2 rounded font-medium text-white"
-            :class="habit.completedToday ? 'bg-gray-500 hover:bg-gray-600' : 'bg-green-500 hover:bg-green-600'"
+            class="px-4 py-2 rounded-xl font-medium text-white"
+            :class="habit.completedToday
+              ? 'bg-slate-500 shadow-none opacity-80 cursor-not-allowed'
+              : 'bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-violet-500/20'"
             @click="toggleHabit(habit.id)"
             :disabled="habit.completedToday"
           >
             {{ habit.completedToday ? 'Erledigt' : 'Erledigen' }}
           </button>
           <button
-            class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded font-medium transition-all"
+            class="px-4 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-rose-500/20"
             @click="deleteHabit(habit.id)"
           >
             Löschen
