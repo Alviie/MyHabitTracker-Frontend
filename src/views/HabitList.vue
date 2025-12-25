@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {ref, onMounted, computed} from 'vue'
 import axios from 'axios'
-import HabitTrackerLogo from '@/views/HabitTrackerLogo.vue'
+import HabitTrackerLogo from '@/views/HabitTrackerLogo.vue';
+
 
 // ======================================
 // DATENMODELL
@@ -39,7 +40,11 @@ interface HabitStats {
 
 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 const endpoint = baseURL + '/habits'
+const userId = localStorage.getItem('userId')
 
+if (!userId) {
+  window.location.href = '/login'
+}
 
 // Habits vom Backend laden
 const habits = ref<Habit[]>([]) // reaktive Liste, die Backend-Daten speichert, Variable ref aktualisiert Template
@@ -55,7 +60,7 @@ onMounted(async () => {
   if (savedOffset !== null) weekOffset.value = Number(savedOffset)
 
   try {
-    const response = await axios.get(endpoint)
+    const response = await axios.get(`${endpoint}?userId=${userId}`)
     habits.value = response.data.map((h: any) => ({
       category: '', targetAmount: 0, targetUnit: '', frequency: 'daily',
       notes: '', color: '#22c55e', icon: '', completions: [],
@@ -66,7 +71,7 @@ onMounted(async () => {
       habits.value.map(async (habit) => {
         try {
           const compResponse = await axios.get(
-            `${endpoint}/${habit.id}/completions?daysBack=90`
+            `${endpoint}/${habit.id}/completions?daysBack=90&userId=${userId}`
           )
           habit.completions = compResponse.data
         } catch {
@@ -89,7 +94,7 @@ const addHabit = async () => {
   if (!trimmed) return
 
   try {
-    const response = await axios.post(endpoint, { name: trimmed })
+    const response = await axios.post(`${endpoint}?userId=${userId}`, { name: trimmed })
     habits.value.push(response.data)
     newHabitName.value = ''
   } catch (err) {
@@ -154,7 +159,7 @@ const saveEdit = async () => {
   const updated = { ...habit, ...editHabit.value }
 
   try {
-    const response = await axios.put(`${endpoint}/${habit.id}`, updated)
+    const response = await axios.put(`${endpoint}/${habit.id}?userId=${userId}`, updated)
     habits.value = habits.value.map(h =>
       h.id === habit.id ? response.data : h
     )
@@ -172,7 +177,7 @@ const saveEdit = async () => {
 // ======================================
 const deleteHabit = async (id: number) => {
   try {
-    await axios.delete(`${endpoint}/${id}`)
+    await axios.delete(`${endpoint}/${id}?userId=${userId}`)
     habits.value = habits.value.filter(h => h.id !== id)
   } catch (err) {
     console.error('Fehler beim Löschen des Habits:', err)
@@ -289,7 +294,7 @@ const toggleHabit = async (habitId: number) => {
 
   try {
     const response = await axios.put(
-      `${endpoint}/${habitId}/complete?completed=true&date=${dateKey}`,
+      `${endpoint}/${habitId}/complete?completed=true&date=${dateKey}&userId=${userId}`,
       null
     )
 

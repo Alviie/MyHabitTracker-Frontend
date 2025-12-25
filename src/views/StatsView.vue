@@ -26,6 +26,13 @@ interface Habit {
 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 const endpoint = baseURL + '/habits'
 
+//new
+const userId = localStorage.getItem('userId')
+
+if (!userId) {
+  window.location.href = '/login'
+}
+
 const habits = ref<Habit[]>([])
 const loading = ref(true)
 
@@ -39,14 +46,14 @@ const formatDate = (d: Date) => {
 
 onMounted(async () => {
   try {
-    const response = await axios.get(endpoint)
+    const response = await axios.get(`${endpoint}?userId=${userId}`)
     habits.value = response.data
 
     await Promise.all(
       habits.value.map(async habit => {
         try {
           const compRes = await axios.get(
-            `${endpoint}/${habit.id}/completions?daysBack=90`
+            `${endpoint}/${habit.id}/completions?daysBack=90&userId=${userId}`
           )
           habit.completions = compRes.data
         } catch {

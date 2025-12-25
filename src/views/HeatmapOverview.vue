@@ -18,16 +18,24 @@ const habits = ref<Habit[]>([])
 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 const endpoint = baseURL + '/habits'
 
+//neu
+const userId = localStorage.getItem('userId')
+
+if (!userId) {
+  window.location.href = '/login'
+}
+
+
 const fetchHabitsWithCompletions = async () => {
   try {
     // 1. Habits laden
-    const response = await axios.get(endpoint)
+    const response = await axios.get(`${endpoint}?userId=${userId}`)
 
     // 2. 🔥 COMPLETIONS PARALLEL laden!
     const habitsWithCompletions = await Promise.all(
       response.data.map(async (h: any) => {
         try {
-          const compResponse = await axios.get(`${endpoint}/${h.id}/completions?daysBack=90`)
+          const compResponse = await axios.get(`${endpoint}/${h.id}/completions?daysBack=90&userId=${userId}`)
           console.log(`✅ ${h.name}: ${compResponse.data.filter((c: any) => c.completed).length}/90`)
           return { ...h, completions: compResponse.data }
         } catch (err) {
