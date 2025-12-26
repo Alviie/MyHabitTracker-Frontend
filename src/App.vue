@@ -3,7 +3,7 @@ import { RouterView } from 'vue-router'
 import BottomNav from '@/components/BottomNav.vue'
 import { ref, onMounted, watch } from 'vue'
 import HabitTrackerLogo from '@/views/HabitTrackerLogo.vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 
 const darkMode = ref(false)
@@ -29,6 +29,13 @@ const userCode = ref<string | null>(null)
 
 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 
+const route = useRoute()
+
+const updateUserData = () => {
+  username.value = localStorage.getItem('username')
+  userCode.value = localStorage.getItem('userCode')
+}
+
 onMounted(() => {
   const saved = localStorage.getItem('darkMode')
   if (saved !== null) {
@@ -36,9 +43,11 @@ onMounted(() => {
   } else {
     applyDarkMode(false)
   }
+  updateUserData()
+})
 
-  username.value = localStorage.getItem('username')
-  userCode.value = localStorage.getItem('userCode')
+watch(() => route.path, () => {
+  updateUserData()
 })
 
 watch(darkMode, (v) => {

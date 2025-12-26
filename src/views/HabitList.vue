@@ -80,7 +80,6 @@ onMounted(async () => {
       })
     )
 
-
   } catch (err) {
     console.error('Fehler:', err)
   }
@@ -243,6 +242,10 @@ const formatDate = (d: Date) => {
 
 const currentDateStr = computed(() => formatDate(currentDate.value))
 
+const isRealToday = computed(() => { //neu
+  const today = new Date()
+  return formatDate(today) === currentDateStr.value
+})
 
 const getWeekdayHeader = (dayIndex: number) => {
   const mondayThisWeek = getMondayOfCurrentWeek()
@@ -466,22 +469,29 @@ const toggleHabit = async (habitId: number) => {
 
         <!-- Buttons: Bearbeiten / Erledigt / Löschen -->
         <div class="flex gap-2">
+
           <button
-            class="px-4 py-2 bg-neutral-300 hover:bg-neutral-200 text-neutral-700 rounded-xl text-sm font-medium transition-colors"
-            @click="startEdit(habit)"
-          > Bearbeiten
+            class="px-4 py-2 rounded-xl text-sm font-medium transition-all"
+            :class="!isRealToday
+              ? 'bg-slate-300 text-slate-500 cursor-not-allowed opacity-70'
+              : 'bg-neutral-300 hover:bg-neutral-200 text-neutral-700'"
+            @click="isRealToday ? startEdit(habit) : null"
+            :disabled="!isRealToday"
+          >
+            Bearbeiten
           </button>
 
           <button
             class="px-4 py-2 rounded-xl font-medium text-white"
-            :class="habit.completedToday
+            :class="habit.completedToday || !isRealToday
               ? 'bg-slate-500 shadow-none opacity-80 cursor-not-allowed'
               : 'bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-violet-500/20'"
             @click="toggleHabit(habit.id)"
-            :disabled="habit.completedToday"
+            :disabled="habit.completedToday || !isRealToday"
           >
-            {{ habit.completedToday ? 'Erledigt' : 'Erledigen' }}
+            {{ habit.completedToday ? 'Erledigt' : (!isRealToday ? 'Gesperrt' : 'Erledigen') }}
           </button>
+
           <button
             class="px-4 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-rose-500/20"
             @click="deleteHabit(habit.id)"
