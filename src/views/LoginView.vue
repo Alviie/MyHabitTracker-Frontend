@@ -65,7 +65,7 @@ const doReset = async () => {
 <template>
   <div class="w-full flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950">
 
-    <div class="justify-center px-160 py-20">
+    <div class="justify-center px-160 py-15">
       <HabitTrackerLogo size="lg" />
     </div>
 
@@ -104,7 +104,7 @@ const doReset = async () => {
             v-model="username"
             type="text"
             placeholder="Username"
-            class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 focus:ring-2 focus:ring-violet-500 outline-none transition-all dark:text-white"
+            class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 focus:ring-2 focus:ring-violet-500 outline-none transition-all dark:bg-slate-300"
           />
         </div>
 

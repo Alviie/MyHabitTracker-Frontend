@@ -275,8 +275,6 @@ const habitsForDay = computed(() => {
   }
 })
 
-
-
 // Toggle für spezifischen Tag
 const toggleHabit = async (habitId: number) => {
   const dateKey = currentDateStr.value

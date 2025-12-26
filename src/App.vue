@@ -73,7 +73,7 @@ const deleteAccount = async () => {
 <template>
   <div class="bg-slate-150 dark:bg-slate-950 pt-0">
 
-    <header class="sticky top-0 z-50 pt-4 px-4 lg:px-11">
+    <header class="sticky top-0 z-50 pt-4 px-4 lg:px-14">
       <div
         :class="[
           'flex items-center gap-4 px-6 py-4 transition-all',
@@ -90,10 +90,11 @@ const deleteAccount = async () => {
 
         <!-- Username + UserID  -->
         <div v-if="$route.path !== '/login'" class="flex-1 flex flex-col items-center text-sm">
-          <div v-if="username" class="text-slate-800 dark:text-slate-100 font-medium">
-            👤 {{ username }}
+          <div v-if="username" class="text-slate-800 dark:text-slate-100 font-medium"
+               style="font-family: Arial, sans-serif;">
+            Hallo {{ username }}
           </div>
-          <div v-if="userCode" class="text-xs text-slate-500 dark:text-slate-400">
+          <div v-if="userCode" class="text-xs text-slate-500 dark:text-slate-300">
             ID: {{ userCode }}
           </div>
         </div>
@@ -115,7 +116,7 @@ const deleteAccount = async () => {
           <button
             v-if="$route.path !== '/login'"
             @click="logout"
-            class="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white hover:bg-slate-300 dark:hover:bg-slate-600 transition-all font-medium"
+            class="px-4 py-1 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white hover:bg-slate-300 dark:hover:bg-slate-600 transition-all font-medium"
           >
             Logout
           </button>
