@@ -4,10 +4,7 @@ import BottomNav from '@/components/BottomNav.vue'
 import { ref, onMounted, watch } from 'vue'
 import HabitTrackerLogo from '@/views/HabitTrackerLogo.vue'
 import { useRouter } from 'vue-router'
-
-// ======================================
-// DARK MODE
-// ======================================
+import axios from 'axios'
 
 const darkMode = ref(false)
 
@@ -27,6 +24,11 @@ const toggleDarkMode = () => {
   applyDarkMode(!darkMode.value)
 }
 
+const username = ref<string | null>(null)
+const userCode = ref<string | null>(null)
+
+const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
+
 onMounted(() => {
   const saved = localStorage.getItem('darkMode')
   if (saved !== null) {
@@ -34,22 +36,38 @@ onMounted(() => {
   } else {
     applyDarkMode(false)
   }
+
+  username.value = localStorage.getItem('username')
+  userCode.value = localStorage.getItem('userCode')
 })
 
 watch(darkMode, (v) => {
   localStorage.setItem('darkMode', String(v))
 })
 
-// ======================================
-// LOGOUT
-// ======================================
 const router = useRouter()
 
 const logout = () => {
   localStorage.removeItem('userId')
+  localStorage.removeItem('username')
+  localStorage.removeItem('userCode')
   router.push('/login')
 }
 
+// Konto löschen + Logout
+const deleteAccount = async () => {
+  const userId = localStorage.getItem('userId')
+  if (!userId) {
+    logout()
+    return
+  }
+  try {
+    await axios.delete(`${baseURL}/auth/delete-account?userId=${userId}`)
+  } catch (e) {
+    console.error('Konto löschen fehlgeschlagen', e)
+  }
+  logout()
+}
 </script>
 
 <template>
@@ -58,20 +76,30 @@ const logout = () => {
     <header class="sticky top-0 z-50 pt-4 px-4 lg:px-11">
       <div
         :class="[
-          'flex justify-between items-center px-6 py-4 transition-all',
+          'flex items-center gap-4 px-6 py-4 transition-all',
           $route.path !== '/login'
             ? 'bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 rounded-2xl shadow-sm'
-            : 'bg-transparent border-none shadow-none'
+            : 'bg-transparent border-none shadow-none justify-end'
         ]"
       >
 
+        <!-- Logo links, nur wenn eingeloggt -->
         <div v-if="$route.path !== '/login'" class="flex-shrink-0 -mt-2">
           <HabitTrackerLogo size="lg" />
         </div>
 
-        <div v-else class="flex-1"></div>
+        <!-- Username + UserID  -->
+        <div v-if="$route.path !== '/login'" class="flex-1 flex flex-col items-center text-sm">
+          <div v-if="username" class="text-slate-800 dark:text-slate-100 font-medium">
+            👤 {{ username }}
+          </div>
+          <div v-if="userCode" class="text-xs text-slate-500 dark:text-slate-400">
+            ID: {{ userCode }}
+          </div>
+        </div>
 
-        <div class="pt-2 flex items-center gap-2">
+        <!-- Darkmode + Logout + Konto löschen -->
+        <div class="flex items-center gap-2">
           <button
             @click="toggleDarkMode"
             class="p-2 rounded-full bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 shadow-md backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform"
@@ -90,6 +118,14 @@ const logout = () => {
             class="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white hover:bg-slate-300 dark:hover:bg-slate-600 transition-all font-medium"
           >
             Logout
+          </button>
+
+          <button
+            v-if="$route.path !== '/login'"
+            @click="deleteAccount"
+            class="px-3 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white text-xs font-medium transition-all"
+          >
+            Konto löschen
           </button>
         </div>
 

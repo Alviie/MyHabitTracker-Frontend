@@ -7,9 +7,10 @@ import HabitTrackerLogo from './HabitTrackerLogo.vue'
 const router = useRouter()
 
 const mode = ref<'login' | 'register' | 'reset'>('login')
-const email = ref('')
+const username = ref('')
 const password = ref('')
 const newPassword = ref('')
+const userCodeForReset = ref('')
 const error = ref<string | null>(null)
 
 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
@@ -18,12 +19,13 @@ const doLogin = async () => {
   error.value = null
   try {
     const res = await axios.post(`${baseURL}/auth/login`, {
-      email: email.value,
+      username: username.value,
       password: password.value,
     })
     localStorage.setItem('userId', String(res.data.userId))
-    localStorage.setItem('userEmail', res.data.email)
-    router.push('/')        // deine bisherige Startseite
+    localStorage.setItem('username', res.data.username)
+    localStorage.setItem('userCode', res.data.userCode)
+    router.push('/')
   } catch (e: any) {
     error.value = 'Login fehlgeschlagen'
   }
@@ -33,11 +35,12 @@ const doRegister = async () => {
   error.value = null
   try {
     const res = await axios.post(`${baseURL}/auth/register`, {
-      email: email.value,
+      username: username.value,
       password: password.value,
     })
     localStorage.setItem('userId', String(res.data.userId))
-    localStorage.setItem('userEmail', res.data.email)
+    localStorage.setItem('username', res.data.username)
+    localStorage.setItem('userCode', res.data.userCode)
     router.push('/')
   } catch (e: any) {
     error.value = 'Registrierung fehlgeschlagen'
@@ -48,7 +51,8 @@ const doReset = async () => {
   error.value = null
   try {
     await axios.post(`${baseURL}/auth/reset-password`, {
-      email: email.value,
+      username: username.value,
+      userCode: userCodeForReset.value,
       newPassword: newPassword.value,
     })
     mode.value = 'login'
@@ -93,34 +97,48 @@ const doReset = async () => {
       </div>
 
       <div class="space-y-4">
+        <!-- Benutzername -->
         <div>
-          <label class="block text-xs font-semibold text-slate-500 uppercase ml-1 mb-1">E-Mail Adresse</label>
+          <label class="block text-xs font-semibold text-slate-500 uppercase ml-1 mb-1">Benutzername</label>
           <input
-            v-model="email"
-            type="email"
-            placeholder="name@gmail.com"
+            v-model="username"
+            type="text"
+            placeholder="Username"
             class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 focus:ring-2 focus:ring-violet-500 outline-none transition-all dark:text-white"
           />
         </div>
 
+        <!-- Passwort (Login/Register) -->
         <div v-if="mode !== 'reset'">
           <label class="block text-xs font-semibold text-slate-500 uppercase ml-1 mb-1">Passwort</label>
           <input
             v-model="password"
             type="password"
-            placeholder="••••"
             class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 focus:ring-2 focus:ring-violet-500 outline-none transition-all dark:text-white"
           />
         </div>
 
-        <div v-if="mode === 'reset'">
-          <label class="block text-xs font-semibold text-slate-500 uppercase ml-1 mb-1">Neues Passwort</label>
-          <input
-            v-model="newPassword"
-            type="password"
-            placeholder="••••••••"
-            class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 focus:ring-2 focus:ring-violet-500 outline-none transition-all dark:text-white"
-          />
+        <!-- Reset: UserID + neues Passwort -->
+        <div v-if="mode === 'reset'" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase ml-1 mb-1">User-ID (5-stellig)</label>
+            <input
+              v-model="userCodeForReset"
+              type="text"
+              maxlength="5"
+              placeholder="z.B. 02739"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 focus:ring-2 focus:ring-violet-500 outline-none transition-all dark:text-white"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase ml-1 mb-1">Neues Passwort</label>
+            <input
+              v-model="newPassword"
+              type="password"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 focus:ring-2 focus:ring-violet-500 outline-none transition-all dark:text-white"
+            />
+          </div>
         </div>
 
         <p v-if="error" class="text-sm text-center text-red-500 font-medium bg-red-50 dark:bg-red-900/20 py-2 rounded-lg">
@@ -131,7 +149,7 @@ const doReset = async () => {
           @click="mode === 'login' ? doLogin() : mode === 'register' ? doRegister() : doReset()"
           class="w-full mt-4 py-3 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold shadow-lg shadow-violet-200 dark:shadow-none transition-all active:scale-[0.98]"
         >
-          {{ mode === 'login' ? 'einloggen' : mode === 'register' ? 'Konto erstellen' : 'Passwort zurücksetzen' }}
+          {{ mode === 'login' ? 'Einloggen' : mode === 'register' ? 'Konto erstellen' : 'Passwort zurücksetzen' }}
         </button>
       </div>
     </div>
