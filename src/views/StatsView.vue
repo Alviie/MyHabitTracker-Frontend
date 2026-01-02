@@ -26,7 +26,6 @@ interface Habit {
 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 const endpoint = baseURL + '/habits'
 
-//new
 const userId = localStorage.getItem('userId')
 
 if (!userId) {

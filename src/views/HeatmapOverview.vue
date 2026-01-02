@@ -4,12 +4,12 @@ import { useRouter } from 'vue-router'
 import HabitHeatmap from '@/components/HabitHeatmap.vue'
 import axios from 'axios'
 
-// 🔥 Interface mit completions!
+// Interface mit completions!
 interface Habit {
   id: number
   name: string
   icon?: string
-  completions?: { date: string; completed: boolean }[]  // ← FEHLT!
+  completions?: { date: string; completed: boolean }[]
 }
 
 const router = useRouter()
@@ -18,20 +18,18 @@ const habits = ref<Habit[]>([])
 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 const endpoint = baseURL + '/habits'
 
-//neu
 const userId = localStorage.getItem('userId')
 
 if (!userId) {
   window.location.href = '/login'
 }
 
-
 const fetchHabitsWithCompletions = async () => {
   try {
     // 1. Habits laden
     const response = await axios.get(`${endpoint}?userId=${userId}`)
 
-    // 2. 🔥 COMPLETIONS PARALLEL laden!
+    // 2. COMPLETIONS PARALLEL laden!
     const habitsWithCompletions = await Promise.all(
       response.data.map(async (h: any) => {
         try {

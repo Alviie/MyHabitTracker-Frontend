@@ -44,7 +44,6 @@ const completedDays = computed(() =>
 
 
 <template>
-  <!-- REST BLEIBT GLEICH wie vorher -->
   <div class="p-6 bg-white rounded-2xl shadow-lg border border-slate-200 dark:bg-slate-800 dark:border-slate-700 hover:shadow-2xl transition-all">
     <div class="flex items-center justify-between mb-9">
       <div class="flex items-center gap-4">
@@ -61,7 +60,7 @@ const completedDays = computed(() =>
       </div>
     </div>
 
-    <!-- Heatmap (identisch) -->
+    <!-- Heatmap -->
     <div class="bg-slate-50 dark:bg-slate-900/30 rounded-xl p-6 border border-slate-200/50 dark:border-slate-700/50">
       <div class="grid grid-cols-7 gap-0.5 max-h-80 overflow-y-auto">
         <div

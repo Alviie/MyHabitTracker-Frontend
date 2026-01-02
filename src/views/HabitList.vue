@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import {ref, onMounted, computed} from 'vue'
 import axios from 'axios'
-import HabitTrackerLogo from '@/views/HabitTrackerLogo.vue';
-
 
 // ======================================
 // DATENMODELL
@@ -170,7 +168,6 @@ const saveEdit = async () => {
   }
 }
 
-
 // ======================================
 // HABIT LÖSCHEN & STATUS WECHSELN
 // ======================================
@@ -203,7 +200,6 @@ const filteredHabits = computed(() => {
 // WOCHEN- & TAG-NAVIGATION
 // ======================================
 
-
 const selectedDay = ref(0)
 const weekOffset = ref<number>(0)
 
@@ -217,14 +213,12 @@ const navigateWeek = (direction: number) => {
   localStorage.setItem('weekOffset', String(weekOffset.value))
 }
 
-
 const getMondayOfCurrentWeek = () => {
   const today = new Date()
   const day = today.getDay() // 0 = Sonntag, 1 = Montag, ...
   const diff = today.getDate() - day + (day === 0 ? -6 : 1)
   return new Date(today.getFullYear(), today.getMonth(), diff)
 }
-
 
 const currentDate = computed(() => {
   const mondayThisWeek = getMondayOfCurrentWeek()

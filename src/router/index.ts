@@ -1,18 +1,16 @@
-// router/index.ts
 import { createRouter, createWebHistory } from 'vue-router'
 import HabitList from '@/views/HabitList.vue'
 import HeatmapOverview from '@/views/HeatmapOverview.vue'
-import StatsView from "@/views/StatsView.vue";  // ← FEHLT!
-import LoginView from "@/views/LoginView.vue"; //new
+import StatsView from "@/views/StatsView.vue";
+import LoginView from "@/views/LoginView.vue";
 
 const routes = [
   { path: '/login', component: LoginView },
   { path: '/', component: HabitList },
   { path: '/heatmap', component: HeatmapOverview },
-  { path: '/stats', component: StatsView }// ← HINZUFÜGEN!
+  { path: '/stats', component: StatsView }
 ]
 
-//new All
 const router = createRouter({
   history: createWebHistory(),
   routes
