@@ -1,8 +1,12 @@
-
 <script setup lang="ts">
 
 import type {Habit} from "@/types/habit.ts";
 import {computed} from "vue";
+
+/**
+ * Heatmap-Komponente: 90-Tage-Grid pro Habit (grün=erledigt).
+ * Computed heatmapData aus habit.completions (Backend-API).
+ */
 
 interface Props {
   habit: Habit  // ← Vollständiges Habit-Interface!

@@ -1,4 +1,12 @@
 <script setup lang="ts">
+/**
+ * Haupt-View: Zeigt Habits für ausgewählten Tag, ermöglicht CRUD-Operationen.
+ * Managed Wochennavigation, Filter (all/open/completed), Inline-Edit-Modal.
+ *
+ * <p>Lädt Habits + Completions parallel. ToggleHabit validiert (schon erledigt? skip).
+ * Darkmode persistent via localStorage. Benötigt userId aus Login.</p>
+ */
+
 import {ref, onMounted, computed} from 'vue'
 import axios from 'axios'
 

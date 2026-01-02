@@ -1,4 +1,11 @@
 <script setup lang="ts">
+
+/**
+ * Statistik-Übersichtsseite mit KPIs, Erfolgsraten, Top-Habits und Detail-Tabelle.
+ * Lädt Habits + 90-Tage-Completions vom Backend, berechnet Metriken client-seitig.
+ *
+ */
+
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 

@@ -1,5 +1,10 @@
 <script setup lang="ts">
 
+/**
+ * Mobile Navigation: Tabs für Habits, Heatmap, Stats.
+ * Fixed bottom, Vue Router Links.
+ */
+
 </script>
 
 <template>

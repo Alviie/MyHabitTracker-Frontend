@@ -1,4 +1,8 @@
 <script setup>
+/**
+ * Bär-Logo für die App
+ *
+ */
 import { computed } from 'vue';
 
 const props = defineProps({

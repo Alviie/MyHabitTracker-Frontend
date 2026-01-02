@@ -4,6 +4,11 @@ import { useRouter } from 'vue-router'
 import HabitHeatmap from '@/components/HabitHeatmap.vue'
 import axios from 'axios'
 
+/**
+ * Heatmap-Komponente: 90-Tage-Grid pro Habit (grün=erledigt).
+ * Computed heatmapData aus habit.completions (Backend-API).
+ */
+
 // Interface mit completions!
 interface Habit {
   id: number

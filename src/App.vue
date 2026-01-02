@@ -6,6 +6,13 @@ import HabitTrackerLogo from '@/views/HabitTrackerLogo.vue'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 
+/**
+ * Hauptlayout: Header (Darkmode, Logout), RouterView, BottomNav.
+ * Managed globalen State (darkMode, userId) via localStorage.
+ *
+ * <p>Redirect zu /login bei fehlender userId. Responsive Design.</p>
+ */
+
 const darkMode = ref(false)
 
 const applyDarkMode = (value: boolean) => {

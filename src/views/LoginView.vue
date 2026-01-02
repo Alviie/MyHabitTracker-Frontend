@@ -4,6 +4,13 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 import HabitTrackerLogo from './HabitTrackerLogo.vue'
 
+/**
+ * Auth-View: Login/Register/Passwort-Reset (3 Modi).
+ * Speichert userId/username/userCode nach Erfolg.
+ *
+ * <p>Reset erfordert 5-stelligen UserCode (Backend-Validierung).</p>
+ */
+
 const router = useRouter()
 
 const mode = ref<'login' | 'register' | 'reset'>('login')
