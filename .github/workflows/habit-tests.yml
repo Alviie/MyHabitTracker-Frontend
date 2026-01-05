@@ -14,4 +14,4 @@ jobs:
           cache: 'npm'
 
       - name: Frontend Tests
-        run: cd frontend && npm ci && npm test
+        run: npm ci && npm test
