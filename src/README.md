@@ -52,7 +52,7 @@ Gib den Namen (z.B. „10 Min. Lesen") in „**Neues Habit…**" ein → **Hinzu
 ### Abhaken
 Wähle Tag → Klicke **Erledigen** → Streak aktualisiert sich automatisch!
 
-### Bearbeiten & Anpassen
+### Bearbeiten & Anpassengit 
 **Bearbeiten** (nur aktueller Tag) → Passe an:
 - **Details**: Name, Kategorie, Notizen
 - **Ziele**: Frequenz, Zielanzahl + Einheit
