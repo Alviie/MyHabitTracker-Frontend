@@ -1,4 +1,4 @@
-name: habit-tests.yml
+name: 5 Frontend Tests
 on: [push, pull_request]
 
 jobs:
@@ -7,11 +7,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node 20
+      - name: Set up Node 24
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
 
       - name: Frontend Tests
-        run: npm ci && npm test
+        run: npm ci && npm run test:unit
