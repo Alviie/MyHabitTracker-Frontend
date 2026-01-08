@@ -32,7 +32,6 @@ const toggleDarkMode = () => {
 }
 
 const username = ref<string | null>(null)
-const userCode = ref<string | null>(null)
 
 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 
@@ -40,7 +39,6 @@ const route = useRoute()
 
 const updateUserData = () => {
   username.value = localStorage.getItem('username')
-  userCode.value = localStorage.getItem('userCode')
 }
 
 onMounted(() => {
@@ -66,7 +64,6 @@ const router = useRouter()
 const logout = () => {
   localStorage.removeItem('userId')
   localStorage.removeItem('username')
-  localStorage.removeItem('userCode')
   router.push('/login')
 }
 
@@ -109,9 +106,6 @@ const deleteAccount = async () => {
           <div v-if="username" class="text-slate-800 dark:text-slate-100 font-medium"
                style="font-family: Arial, sans-serif;">
             Hallo {{ username }}
-          </div>
-          <div v-if="userCode" class="text-xs text-slate-500 dark:text-slate-300">
-            ID: {{ userCode }}
           </div>
         </div>
 

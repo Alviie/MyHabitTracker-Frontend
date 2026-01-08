@@ -5,10 +5,10 @@ import axios from 'axios'
 import HabitTrackerLogo from './HabitTrackerLogo.vue'
 
 /**
- * Auth-View: Login/Register/Passwort-Reset (3 Modi).
- * Speichert userId/username/userCode nach Erfolg.
+ * Auth-View für Login, Registrierung und Passwort-Reset.
  *
- * <p>Reset erfordert 5-stelligen UserCode (Backend-Validierung).</p>
+ * Speichert userId und username nach erfolgreicher Authentifizierung.
+ * Der User-Code wird nur bei der Registrierung einmal angezeigt.
  */
 
 const router = useRouter()
@@ -19,6 +19,10 @@ const password = ref('')
 const newPassword = ref('')
 const userCodeForReset = ref('')
 const error = ref<string | null>(null)
+
+const showUserCodeModal = ref(false)
+const registeredUserCode = ref('')
+const userCodeInput = ref<HTMLInputElement | null>(null)
 
 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 
@@ -31,12 +35,12 @@ const doLogin = async () => {
     })
     localStorage.setItem('userId', String(res.data.userId))
     localStorage.setItem('username', res.data.username)
-    localStorage.setItem('userCode', res.data.userCode)
     router.push('/')
   } catch (e: any) {
     error.value = 'Login fehlgeschlagen'
   }
 }
+
 
 const doRegister = async () => {
   error.value = null
@@ -45,10 +49,14 @@ const doRegister = async () => {
       username: username.value,
       password: password.value,
     })
+
     localStorage.setItem('userId', String(res.data.userId))
     localStorage.setItem('username', res.data.username)
-    localStorage.setItem('userCode', res.data.userCode)
-    router.push('/')
+
+    // simpan code & tampilkan modal
+    registeredUserCode.value = res.data.userCode
+    showUserCodeModal.value = true
+
   } catch (e: any) {
     error.value = 'Registrierung fehlgeschlagen'
   }
@@ -128,12 +136,12 @@ const doReset = async () => {
         <!-- Reset: UserID + neues Passwort -->
         <div v-if="mode === 'reset'" class="space-y-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase ml-1 mb-1">User-ID (5-stellig)</label>
+            <label class="block text-xs font-semibold text-slate-500 uppercase ml-1 mb-1">User-ID (12-stellig)</label>
             <input
               v-model="userCodeForReset"
               type="text"
-              maxlength="5"
-              placeholder="z.B. 02739"
+              maxlength="12"
+              placeholder="************"
               class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 focus:ring-2 focus:ring-violet-500 outline-none transition-all dark:text-white"
             />
           </div>
@@ -158,6 +166,38 @@ const doReset = async () => {
         >
           {{ mode === 'login' ? 'Einloggen' : mode === 'register' ? 'Konto erstellen' : 'Passwort zurücksetzen' }}
         </button>
+      </div>
+    </div>
+
+    <div
+      v-if="showUserCodeModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+    >
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-5 w-full max-w-sm">
+
+        <h3 class="text-center text-base font-semibold mb-2 text-slate-900 dark:text-white">
+          Herzlich Willkommen bei My Habit Tracker
+        </h3>
+
+        <p class="text-sm text-center text-slate-600 dark:text-slate-300 mb-3">
+          Bevor du Tracker nutzt, kopiere bitte diesen persönlichen Code
+          und bewahre ihn sicher auf.
+        </p>
+
+        <input
+          ref="userCodeInput"
+          :value="registeredUserCode"
+          readonly
+          autofocus
+          class="w-full w-40 px-5 py-2 border rounded text-center font-mono bg-slate-100 dark:bg-slate-800 dark:text-white"
+        />
+        <button
+          class="mt-4 w-full bg-violet-600 text-white py-2 rounded hover:bg-violet-700"
+          @click="() => { showUserCodeModal = false; router.push('/') }"
+        >
+          Okay!
+        </button>
+
       </div>
     </div>
   </div>
