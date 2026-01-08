@@ -12,9 +12,16 @@ Sobald du die Webanwendung öffnest, startest du auf der **Login-Seite**. Hier h
 
 - **Registrieren**: Erstelle ein neues Konto, um dein Tracking zu starten
 - **Login**: Melde dich mit deinem Benutzernamen und Passwort an
-- **Passwort vergessen?** Du kannst dein Passwort jederzeit zurücksetzen. Dazu benötigst du deinen Benutzernamen, ein neues Passwort und deine **5-stellige User-ID**
+- **Passwort vergessen?** Du kannst dein Passwort jederzeit zurücksetzen. Dazu benötigst du deinen Benutzernamen, ein neues Passwort und deine **12-stellige User-ID**
 
-> 📌 **Hinweis zur User-ID**: Deine persönliche ID wird dir nach dem Login oben im Header angezeigt. Notiere dir diese gut – sie ist notwendig, falls du dein Passwort einmal zurücksetzen musst.
+> 📌 **Hinweis zu deiner User-ID**
+
+Nach der **Registrierung** wird **einmalig** ein **12-stelliger User-Code** in einem Popup angezeigt.
+
+- Der Code muss **kopiert und sicher gespeichert** werden
+- Er wird **nicht erneut angezeigt**
+
+Der User-Code wird benötigt, um später das Passwort zurückzusetzen.
 
 ## 2. Hauptseite: Dashboard
 
