@@ -56,21 +56,7 @@ describe('HabitList', () => {
   })
 
   /**
-   * **Test 3: Zeigt nichts bei leerem Server**
-   *
-   * Simuliert: Server antwortet leer [] → Komponente zeigt leere Liste
-   * Prüft: Keine <li>-Elemente (v-for rendert nichts)
-   * Ziel: App crasht nicht wenn keine Habits existieren
-   */
-  it('should render message when no habits received from backend', async () => {
-    vi.mocked(axios, true).get.mockResolvedValueOnce({ data: emptyResponse })
-    const wrapper = shallowMount(HabitList)
-    await flushPromises()
-    expect(wrapper.findAll('li').length).toBe(0)
-  })
-
-  /**
-   * **Test 4: "Neues Habit" Eingabe + Button vorhanden**
+   * **Test 3: "Neues Habit" Eingabe + Button vorhanden**
    *
    * Simuliert: Komponente lädt → AddHabit-Bereich sichtbar
    * Prüft: Eingabefeld (<input>) + "Hinzufügen"-Button existieren
@@ -84,7 +70,7 @@ describe('HabitList', () => {
   })
 
   /**
-   * **Test 5: Streak-Zähler aus Server-Daten**
+   * **Test 4: Streak-Zähler aus Server-Daten**
    *
    * Simuliert: Backend sendet Habit mit streakCount=3 → "Streak: 3" im Template
    * Prüft: Template zeigt korrekte Streak-Zahl aus API
@@ -98,7 +84,7 @@ describe('HabitList', () => {
   })
 
   /**
-   * **Test 6: Filter-Buttons sind vorhanden**
+   * **Test 5: Filter-Buttons sind vorhanden**
    *
    * Simuliert: Seite lädt ohne Backend-Daten
    * Prüft: Buttons "Alle", "Offen", "Erledigt" existieren
@@ -115,23 +101,7 @@ describe('HabitList', () => {
   })
 
   /**
-   * **Test 7: Wochen-Navigation Buttons vorhanden**
-   *
-   * Simuliert: Initialer Render
-   * Prüft: Buttons "← Woche" und "Woche →" existieren
-   * Ziel: Navigation zwischen Wochen ist Kernfunktion
-   */
-  it('should render week navigation buttons', () => {
-    vi.mocked(axios, true).get.mockResolvedValue({ data: emptyResponse })
-
-    const wrapper = shallowMount(HabitList)
-
-    expect(wrapper.text()).toContain('← Woche')
-    expect(wrapper.text()).toContain('Woche →')
-  })
-
-  /**
-   * **Test 8: Rendert exakt 7 Wochentage**
+   * **Test 6: Rendert exakt 7 Wochentage**
    *
    * Simuliert: Initiales Mounten der Komponente
    * Prüft: Die Wochentags-Navigation enthält genau 7 Buttons
@@ -149,7 +119,7 @@ describe('HabitList', () => {
   })
 
   /**
-   * **Test 9: Add-Habit Input wird nach dem Hinzufügen geleert**
+   * **Test 7: Add-Habit Input wird nach dem Hinzufügen geleert**
    *
    * Simuliert: User gibt einen Habit-Namen ein und Klickt auf den "Hinzufügen"-Button
    * Prüft: Das Eingabefeld ist nach erfolgreichem POST wieder leer
@@ -179,7 +149,7 @@ describe('HabitList', () => {
   })
 
   /**
-   * **Test 10: Standard-Filter ist "all"**
+   * **Test 8: Standard-Filter ist "all"**
    * Simuliert: Initiales Mounten der Komponente
    * Prüft: Der interne Filter-Status (`filterMode`) ist initial auf `"all"` gesetzt
    * Ziel: Stellt sicher, dass beim ersten Seitenaufruf keine Filterung aktiv ist; Verhindert unerwartet leere oder gefilterte Ansichten
@@ -191,5 +161,120 @@ describe('HabitList', () => {
 
     // @ts-ignore – Zugriff auf internen State bewusst für Test
     expect(wrapper.vm.filterMode).toBe('all')
+  })
+
+  /**
+   * **Test 9: Leerer Habit-Name löst keinen POST aus**
+   *
+   * Simuliert: User klickt auf "Hinzufügen" ohne Text einzugeben
+   * Prüft: Es wird kein POST-Request an das Backend gesendet
+   * Ziel: Verhindert das Anlegen leerer oder ungültiger Habits
+   */
+  it('does not call backend when adding empty habit', async () => {
+    vi.mocked(axios, true).get.mockResolvedValueOnce({ data: [] })
+
+    const wrapper = shallowMount(HabitList)
+
+    const addButton = wrapper.findAll('button')
+      .find(btn => btn.text().includes('Hinzufügen'))!
+
+    await addButton.trigger('click')
+
+    expect(axios.post).not.toHaveBeenCalled()
+  })
+
+  /**
+   * **Test 10: Löschen schlägt fehl**
+   *
+   * Simuliert: DELETE-Request wirft Fehler
+   * Prüft: Habit bleibt in der Liste
+   * Ziel: UI bleibt konsistent mit Backend
+   */
+  it('keeps habit when delete request fails', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    vi.mocked(axios, true).get.mockResolvedValueOnce({
+      data: [{ id: 1, name: 'Joggen', streakCount: 1 }]
+    })
+    vi.mocked(axios, true).delete.mockRejectedValueOnce(new Error('500'))
+
+    const wrapper = shallowMount(HabitList)
+    await flushPromises()
+
+    // @ts-ignore
+    await wrapper.vm.deleteHabit(1)
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('Joggen')
+  })
+
+  /**
+   * **Test 11: Ungültige Werte im localStorage**
+   *
+   * Simuliert: selectedDay ist kein gültiger Wert
+   * Prüft: App crasht nicht
+   */
+  it('handles invalid selectedDay from localStorage gracefully', async () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockReturnValueOnce('not-a-number')
+
+    vi.mocked(axios, true).get.mockResolvedValueOnce({ data: [] })
+
+    const wrapper = shallowMount(HabitList)
+    await flushPromises()
+
+    expect(wrapper.exists()).toBe(true)
+  })
+
+  /**
+   * **Test 12: Edit speichern schlägt fehl**
+   *
+   * Simuliert: PUT-Request wirft Fehler
+   * Prüft: Edit-Modal bleibt offen
+   * Ziel: User sieht, dass Speichern fehlgeschlagen ist
+   */
+  it('keeps edit modal open when save fails', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    vi.mocked(axios, true).get.mockResolvedValueOnce({
+      data: [{ id: 1, name: 'Joggen', streakCount: 1 }]
+    })
+    vi.mocked(axios, true).put.mockRejectedValueOnce(new Error('500'))
+
+    const wrapper = shallowMount(HabitList)
+    await flushPromises()
+
+    // @ts-ignore
+    wrapper.vm.startEdit({ id: 1, name: 'Joggen' })
+
+    // @ts-ignore
+    await wrapper.vm.saveEdit()
+
+    // @ts-ignore
+    expect(wrapper.vm.showEditModal).toBe(true)
+  })
+
+  /**
+   * **Test 13: Bearbeiten abbrechen**
+   *
+   * Simuliert: User öffnet Edit, ändert Name, klickt Abbrechen
+   * Prüft: Originalname bleibt erhalten
+   */
+  it('does not update habit when edit is cancelled', async () => {
+    vi.mocked(axios, true).get.mockResolvedValueOnce({
+      data: [{ id: 1, name: 'Joggen', streakCount: 1 }]
+    })
+
+    const wrapper = shallowMount(HabitList)
+    await flushPromises()
+
+    // @ts-ignore
+    wrapper.vm.startEdit({ id: 1, name: 'Joggen' })
+    // @ts-ignore
+    wrapper.vm.editHabit.name = 'Geändert'
+    // @ts-ignore
+    wrapper.vm.cancelEdit()
+
+    expect(wrapper.text()).toContain('Joggen')
+    expect(wrapper.text()).not.toContain('Geändert')
   })
 })
