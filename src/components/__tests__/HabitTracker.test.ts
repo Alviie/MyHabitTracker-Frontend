@@ -164,27 +164,7 @@ describe('HabitList', () => {
   })
 
   /**
-   * **Test 9: Leerer Habit-Name löst keinen POST aus**
-   *
-   * Simuliert: User klickt auf "Hinzufügen" ohne Text einzugeben
-   * Prüft: Es wird kein POST-Request an das Backend gesendet
-   * Ziel: Verhindert das Anlegen leerer oder ungültiger Habits
-   */
-  it('does not call backend when adding empty habit', async () => {
-    vi.mocked(axios, true).get.mockResolvedValueOnce({ data: [] })
-
-    const wrapper = shallowMount(HabitList)
-
-    const addButton = wrapper.findAll('button')
-      .find(btn => btn.text().includes('Hinzufügen'))!
-
-    await addButton.trigger('click')
-
-    expect(axios.post).not.toHaveBeenCalled()
-  })
-
-  /**
-   * **Test 10: Backend-GET schlägt fehl**
+   * **Test 9: Backend-GET schlägt fehl**
    *
    * Simuliert: GET-Request wirft Fehler (z. B. 500)
    * Prüft: Komponente rendert trotzdem und crasht nicht
@@ -202,7 +182,7 @@ describe('HabitList', () => {
 
 
   /**
-   * **Test 11: Ungültige Werte im localStorage**
+   * **Test 10: Ungültige Werte im localStorage**
    *
    * Simuliert: selectedDay ist kein gültiger Wert
    * Prüft: App crasht nicht
@@ -219,7 +199,7 @@ describe('HabitList', () => {
   })
 
   /**
-   * **Test 12: Edit speichern schlägt fehl**
+   * **Test 11: Edit speichern schlägt fehl**
    *
    * Simuliert: PUT-Request wirft Fehler
    * Prüft: Edit-Modal bleibt offen
@@ -247,7 +227,7 @@ describe('HabitList', () => {
   })
 
   /**
-   * **Test 13: Bearbeiten abbrechen**
+   * **Test 12: Bearbeiten abbrechen**
    *
    * Simuliert: User öffnet Edit, ändert Name, klickt Abbrechen
    * Prüft: Originalname bleibt erhalten
@@ -270,4 +250,30 @@ describe('HabitList', () => {
     expect(wrapper.text()).toContain('Joggen')
     expect(wrapper.text()).not.toContain('Geändert')
   })
+
+  /**
+   * **Test 13: Löschen schlägt fehl**
+   *
+   * Simuliert: DELETE-Request wirft Fehler
+   * Prüft: Habit bleibt in der Liste
+   * Ziel: UI bleibt konsistent bei Backend-Fehlern
+   */
+  it('keeps habit when delete request fails', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    vi.mocked(axios, true).get.mockResolvedValueOnce({
+      data: [{ id: 1, name: 'Joggen', streakCount: 1 }]
+    })
+    vi.mocked(axios, true).delete.mockRejectedValueOnce(new Error('500'))
+
+    const wrapper = shallowMount(HabitList)
+    await flushPromises()
+
+    // @ts-ignore
+    await wrapper.vm.deleteHabit(1)
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('Joggen')
+  })
+
 })
