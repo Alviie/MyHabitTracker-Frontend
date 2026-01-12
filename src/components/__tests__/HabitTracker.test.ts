@@ -184,29 +184,22 @@ describe('HabitList', () => {
   })
 
   /**
-   * **Test 10: Löschen schlägt fehl**
+   * **Test 10: Backend-GET schlägt fehl**
    *
-   * Simuliert: DELETE-Request wirft Fehler
-   * Prüft: Habit bleibt in der Liste
-   * Ziel: UI bleibt konsistent mit Backend
+   * Simuliert: GET-Request wirft Fehler (z. B. 500)
+   * Prüft: Komponente rendert trotzdem und crasht nicht
    */
-  it('keeps habit when delete request fails', async () => {
+  it('does not crash when loading habits fails', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
-
-    vi.mocked(axios, true).get.mockResolvedValueOnce({
-      data: [{ id: 1, name: 'Joggen', streakCount: 1 }]
-    })
-    vi.mocked(axios, true).delete.mockRejectedValueOnce(new Error('500'))
+    vi.mocked(axios, true).get.mockRejectedValueOnce(new Error('500'))
 
     const wrapper = shallowMount(HabitList)
     await flushPromises()
 
-    // @ts-ignore
-    await wrapper.vm.deleteHabit(1)
-    await flushPromises()
-
-    expect(wrapper.text()).toContain('Joggen')
+    expect(wrapper.exists()).toBe(true)
+    expect(wrapper.findAll('li').length).toBe(0)
   })
+
 
   /**
    * **Test 11: Ungültige Werte im localStorage**
